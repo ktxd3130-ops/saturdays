@@ -443,11 +443,79 @@ const HEALTH = [
   {id:'stress',   emoji:'🌪️', t:'Chronic high stress',    d:'Rarely able to switch off',   delta:-2},
 ];
 
+/* ---------- Storage adapter ----------
+   Native (Capacitor): @capacitor/preferences — durable, UserDefaults-backed,
+   survives iOS storage-pressure eviction. WKWebView localStorage does NOT —
+   iOS can silently evict it, wiping the user's entire history. That's why all
+   state goes through this shim. On the web (Vercel) it falls back to
+   localStorage so the exact same index.html runs unchanged in the browser. */
+const Store = (() => {
+  const cap = window.Capacitor;
+  const isNative = !!(cap && cap.isNativePlatform && cap.isNativePlatform());
+  const Pref = isNative && cap.Plugins && cap.Plugins.Preferences;
+  return {
+    isNative,
+    async get(key){
+      if(Pref){ const r = await Pref.get({ key }); return r.value; }
+      try{ return localStorage.getItem(key); }catch(e){ return null; }
+    },
+    async set(key, value){
+      if(Pref){ await Pref.set({ key, value }); return; }
+      try{ localStorage.setItem(key, value); }catch(e){}
+    }
+  };
+})();
+const KEY = 'saturdays_v2';
+
 /* ---------- State ---------- */
-let S = load();
-function load(){ try{ return JSON.parse(localStorage.getItem('saturdays_v2')) || blank(); }catch(e){ return blank(); } }
+let S = blank();
 function blank(){ return { bday:null, sex:null, health:{}, people:[], checkins:{} }; }
-function save(){ localStorage.setItem('saturdays_v2', JSON.stringify(S)); }
+
+async function loadState(){
+  try{
+    let raw = await Store.get(KEY);
+    // One-time migration: pull any pre-Capacitor localStorage data into the
+    // durable native store so existing users don't lose their history.
+    if(!raw && Store.isNative){
+      let legacy = null;
+      try{ legacy = localStorage.getItem(KEY); }catch(e){}
+      if(legacy){ raw = legacy; await Store.set(KEY, legacy); }
+    }
+    return raw ? (JSON.parse(raw) || blank()) : blank();
+  }catch(e){ return blank(); }
+}
+
+// All existing callers stay synchronous-looking; the durable write is
+// fire-and-forget (both Preferences and localStorage are safe this way).
+function save(){ Store.set(KEY, JSON.stringify(S)); }
+
+/* ---------- Local notifications (native only) ----------
+   A weekly, content-free Saturday reminder that deep-links into Presence.
+   It's a local notification — no server, no APNs — so the "nothing leaves
+   your device" promise holds. Permission is requested contextually the first
+   time the user opens the Presence screen (better opt-in than a cold launch
+   prompt). Re-scheduling with a fixed id overwrites rather than duplicates. */
+const SAT_NOTIF_ID = 2026;
+let notifTried = false;
+async function ensureSaturdayReminder(){
+  const cap = window.Capacitor;
+  if(!(cap && cap.isNativePlatform && cap.isNativePlatform())) return;
+  const LN = cap.Plugins && cap.Plugins.LocalNotifications;
+  if(!LN) return;
+  try{
+    let perm = await LN.checkPermissions();
+    if(perm.display !== 'granted'){ perm = await LN.requestPermissions(); }
+    if(perm.display !== 'granted') return;
+    await LN.schedule({ notifications: [{
+      id: SAT_NOTIF_ID,
+      title: "It's Saturday.",
+      body: "Were you present this week?",
+      // Apple weekday numbering: 1=Sun … 7=Sat. Repeats every Saturday 9am local.
+      schedule: { on: { weekday: 7, hour: 9, minute: 0 }, allowWhileIdle: true },
+      extra: { screen: 'presence' }
+    }]});
+  }catch(e){ /* notifications are best-effort; never block the UI */ }
+}
 
 /* ---------- Date helpers ---------- */
 function ageFrom(bdayStr, at=new Date()){
@@ -764,6 +832,8 @@ function renderPresence(){
   card.querySelector('.yes').onclick=()=>checkin(key,true);
   card.querySelector('.no').onclick =()=>checkin(key,false);
   renderStreak();
+  // First visit here is the contextual moment to ask for the weekly reminder.
+  if(!notifTried){ notifTried = true; ensureSaturdayReminder(); }
 }
 function checkin(key,val){ S.checkins[key]=val; save(); renderPresence(); }
 function renderStreak(){
@@ -873,7 +943,19 @@ function bootApp(){ renderClock(); }
 window.addEventListener('resize', ()=>{ if($('#screen-clock').classList.contains('active')) drawGrid(); });
 window.addEventListener('orientationchange', ()=>setTimeout(drawGrid,300));
 
-if(S.bday && S.sex){ $('#onboard').classList.add('hide'); bootApp(); }
+(async function init(){
+  S = await loadState();
+  if(S.bday && S.sex){ $('#onboard').classList.add('hide'); bootApp(); }
+  // Tapping the Saturday reminder deep-links straight to the Presence screen.
+  const cap = window.Capacitor;
+  const LN = cap && cap.Plugins && cap.Plugins.LocalNotifications;
+  if(LN && LN.addListener){
+    LN.addListener('localNotificationActionPerformed', ev => {
+      if(ev && ev.notification && ev.notification.extra &&
+         ev.notification.extra.screen === 'presence'){ showScreen('presence'); }
+    });
+  }
+})();
 </script>
 </body>
 </html>

@@ -1,0 +1,34 @@
+{
+  "name": "saturdays",
+  "version": "1.0.0",
+  "description": "Saturdays — a memento mori clock. One codebase: Vercel web app + Capacitor iOS app.",
+  "main": "index.html",
+  "scripts": {
+    "copy:www": "rm -rf www && mkdir -p www && cp index.html www/index.html",
+    "sync": "npm run copy:www && cap sync ios",
+    "assets": "capacitor-assets generate --ios"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ktxd3130-ops/saturdays.git"
+  },
+  "keywords": ["memento-mori", "capacitor", "ios"],
+  "author": "Kendall Dale",
+  "license": "UNLICENSED",
+  "private": true,
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/ktxd3130-ops/saturdays/issues"
+  },
+  "homepage": "https://github.com/ktxd3130-ops/saturdays#readme",
+  "dependencies": {
+    "@capacitor/cli": "^8.4.1",
+    "@capacitor/core": "^8.4.1",
+    "@capacitor/ios": "^8.4.1",
+    "@capacitor/local-notifications": "^8.2.0",
+    "@capacitor/preferences": "^8.0.1"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5"
+  }
+}
