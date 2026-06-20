@@ -232,6 +232,8 @@
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
   .empty{text-align:center;color:var(--ink-faint);font-size:14px;padding:24px 10px;line-height:1.5;}
+  .crisis-note{text-align:center;color:var(--ink-faint);font-size:12px;line-height:1.5;margin:22px 8px 0;}
+  .crisis-note a{color:var(--ink-dim);text-decoration:underline;text-underline-offset:2px;}
 </style>
 </head>
 <body>
@@ -295,6 +297,7 @@
       <div class="stat"><div class="v" id="stMonths">—</div><div class="l">Months remaining</div></div>
       <div class="stat"><div class="v" id="stWeeks">—</div><div class="l">Weeks remaining</div></div>
     </div>
+    <p class="crisis-note">A mirror, not a prophecy. If you're struggling, you're not alone — <a href="sms:988">text or call 988</a>.</p>
   </section>
 
   <!-- ====== SCREEN: HEALTH ====== -->
@@ -487,7 +490,31 @@ async function loadState(){
 
 // All existing callers stay synchronous-looking; the durable write is
 // fire-and-forget (both Preferences and localStorage are safe this way).
-function save(){ Store.set(KEY, JSON.stringify(S)); }
+function save(){ Store.set(KEY, JSON.stringify(S)); writeWidgetData(); }
+
+/* ---------- Widget bridge (native only) ----------
+   Mirrors a tiny snapshot into the shared App Group so the iOS WidgetKit
+   extension can show the live Saturday count without launching the app.
+   Preferences is configured (in init) to use the App Group suite, and it
+   prefixes keys — so the Swift widget reads:
+     UserDefaults(suiteName: APP_GROUP)?.string(forKey: "CapacitorStorage.saturdays_widget")
+   The widget can recompute from birthday + adjustmentYears to stay fresh
+   between app opens. */
+const APP_GROUP  = 'group.com.kendalldale.saturdays';
+const WIDGET_KEY = 'saturdays_widget';
+function writeWidgetData(){
+  if(!Store.isNative || !(S.bday && S.sex)) return;
+  try{
+    const c = compute();
+    Store.set(WIDGET_KEY, JSON.stringify({
+      saturdaysLeft: Math.round(c.left),
+      birthday: S.bday,
+      sex: S.sex,
+      adjustmentYears: bonusYears(),
+      asOf: new Date().toISOString()
+    }));
+  }catch(e){ /* widget mirror is best-effort */ }
+}
 
 /* ---------- Local notifications (native only) ----------
    A weekly, content-free Saturday reminder that deep-links into Presence.
@@ -908,15 +935,33 @@ function drawShare(){
 
   $('#shareCaption').innerHTML=`<b style="color:var(--ink)">Caption:</b> I have ${fmt(c.left)} Saturdays left. What are you doing with yours? 🕯️ saturdays-vert.vercel.app`;
 }
-$('#downloadBtn').onclick=()=>{
+function shareText(){
+  const c=compute();
+  return `I have ${fmt(c.left)} Saturdays left. What are you doing with yours? 🕯️\nsaturdays-vert.vercel.app`;
+}
+/* Native share: write the 1080×1920 PNG to the cache, then hand the file to the
+   iOS share sheet (Messages, Instagram, Save to Photos…). navigator.share with
+   files is unreliable in WKWebView, so on native we always take this path. */
+async function nativeShareImage(text){
+  const cap=window.Capacitor, FS=cap.Plugins.Filesystem, Share=cap.Plugins.Share;
+  const base64=$('#shareCanvas').toDataURL('image/png').split(',')[1];
+  const w=await FS.writeFile({ path:`saturdays-${Date.now()}.png`, data:base64, directory:'CACHE' });
+  await Share.share({ text, files:[w.uri], dialogTitle:'Your Saturdays' });
+}
+$('#downloadBtn').onclick=async()=>{
+  if(Store.isNative && window.Capacitor.Plugins.Share){
+    try{ await nativeShareImage(shareText()); return; }catch(e){}
+  }
   const a=document.createElement('a');
   a.download='my-saturdays.png';
   a.href=$('#shareCanvas').toDataURL('image/png');
   a.click(); toast('Saved');
 };
 $('#shareBtn').onclick=async()=>{
-  const c=compute();
-  const text=`I have ${fmt(c.left)} Saturdays left. What are you doing with yours? 🕯️\nsaturdays-vert.vercel.app`;
+  const text=shareText();
+  if(Store.isNative && window.Capacitor.Plugins.Share){
+    try{ await nativeShareImage(text); return; }catch(e){ /* fall through to web */ }
+  }
   try{
     const blob=await new Promise(res=>$('#shareCanvas').toBlob(res,'image/png'));
     const file=new File([blob],'saturdays.png',{type:'image/png'});
@@ -944,7 +989,15 @@ window.addEventListener('resize', ()=>{ if($('#screen-clock').classList.contains
 window.addEventListener('orientationchange', ()=>setTimeout(drawGrid,300));
 
 (async function init(){
+  // Route Preferences into the shared App Group suite so the widget reads the
+  // same store. Must run before the first read. No-op on web.
+  const _cap = window.Capacitor;
+  if(_cap && _cap.isNativePlatform && _cap.isNativePlatform()){
+    const P = _cap.Plugins && _cap.Plugins.Preferences;
+    if(P && P.configure){ try{ await P.configure({ group: APP_GROUP }); }catch(e){} }
+  }
   S = await loadState();
+  writeWidgetData();
   if(S.bday && S.sex){ $('#onboard').classList.add('hide'); bootApp(); }
   // Tapping the Saturday reminder deep-links straight to the Presence screen.
   const cap = window.Capacitor;

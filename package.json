@@ -12,7 +12,11 @@
     "type": "git",
     "url": "git+https://github.com/ktxd3130-ops/saturdays.git"
   },
-  "keywords": ["memento-mori", "capacitor", "ios"],
+  "keywords": [
+    "memento-mori",
+    "capacitor",
+    "ios"
+  ],
   "author": "Kendall Dale",
   "license": "UNLICENSED",
   "private": true,
@@ -24,9 +28,11 @@
   "dependencies": {
     "@capacitor/cli": "^8.4.1",
     "@capacitor/core": "^8.4.1",
+    "@capacitor/filesystem": "^8.1.2",
     "@capacitor/ios": "^8.4.1",
     "@capacitor/local-notifications": "^8.2.0",
-    "@capacitor/preferences": "^8.0.1"
+    "@capacitor/preferences": "^8.0.1",
+    "@capacitor/share": "^8.0.1"
   },
   "devDependencies": {
     "@capacitor/assets": "^3.0.5"
