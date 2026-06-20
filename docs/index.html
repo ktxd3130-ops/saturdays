@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Life Clock — your countdown</title>
+<style>
+  :root{--bg:#0b0f1a;--bg2:#121829;--card:#161d31;--card2:#1b2540;--line:#26314f;--txt:#e8edf7;--muted:#94a3c4;--accent:#7c5cff;--accent2:#22d3ee;--green:#34d399;--amber:#fbbf24;--red:#fb7185;--grad:linear-gradient(120deg,#7c5cff,#22d3ee);}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:radial-gradient(1200px 600px at 80% -10%,#1a2342 0%,var(--bg) 55%);color:var(--txt);line-height:1.6;-webkit-font-smoothing:antialiased;padding-bottom:80px}
+  .wrap{max-width:880px;margin:0 auto;padding:0 22px}
+  a{color:var(--accent2);text-decoration:none}
+  header{padding:48px 0 20px;text-align:center}
+  .badge{display:inline-block;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--accent2);border:1px solid var(--line);padding:6px 14px;border-radius:999px;margin-bottom:18px}
+  h1{font-size:clamp(32px,6vw,52px);line-height:1.04;font-weight:800;letter-spacing:-1.5px}
+  h1 .g{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--muted);font-size:clamp(15px,2.2vw,18px);max-width:560px;margin:16px auto 0}
+  h2{font-size:24px;font-weight:800;letter-spacing:-.5px;margin:44px 0 6px}
+  h3{font-size:17px;font-weight:800;margin:0 0 4px}
+  .lead{color:var(--muted);margin-bottom:20px;max-width:680px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+  .hidden{display:none!important}
+  label.fld{display:block;font-weight:700;font-size:14px;margin:16px 0 7px}
+  label.fld .hint{font-weight:400;color:var(--muted);font-size:12.5px;margin-left:6px}
+  input[type=date],input[type=number],select{width:100%;background:var(--bg2);border:1px solid var(--line);border-radius:11px;color:var(--txt);padding:12px 14px;font-size:15px;font-family:inherit}
+  input:focus,select:focus{outline:none;border-color:var(--accent2)}
+  .btn{background:var(--grad);color:#0b0f1a;border:none;font-weight:800;padding:13px 20px;border-radius:11px;font-size:15px;cursor:pointer;font-family:inherit}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--txt)}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  /* clock */
+  .clockwrap{text-align:center;margin-top:8px}
+  .clock{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:6px 0 4px}
+  .unit{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 10px;min-width:92px}
+  .unit .n{font-size:clamp(26px,6vw,40px);font-weight:800;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-1px}
+  .unit .l{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-top:6px}
+  @media(max-width:560px){.unit{min-width:64px;padding:12px 6px}}
+  .clocksub{color:var(--muted);font-size:14px;margin-top:10px}
+  .clocksub b{color:var(--txt)}
+  .deathline{margin-top:4px;font-size:13px;color:var(--muted)}
+  .glow{box-shadow:0 0 0 1px rgba(124,92,255,.25),0 14px 50px -20px rgba(124,92,255,.55)}
+  /* breakdown */
+  .bars{display:grid;gap:8px;margin-top:6px}
+  .bar{display:grid;grid-template-columns:130px 1fr 64px;gap:10px;align-items:center;font-size:13.5px}
+  .bar .bl{color:var(--muted)}
+  .bar .track{height:10px;background:var(--bg2);border-radius:999px;position:relative;overflow:hidden}
+  .bar .fill{position:absolute;top:0;bottom:0;border-radius:999px}
+  .bar .fill.pos{background:var(--green);left:50%}
+  .bar .fill.neg{background:var(--red);right:50%}
+  .bar .mid{position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:var(--line)}
+  .bar .v{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+  .v.pos{color:var(--green)}.v.neg{color:var(--red)}.v.zero{color:var(--muted)}
+  @media(max-width:560px){.bar{grid-template-columns:96px 1fr 52px;font-size:12.5px}}
+  /* habits */
+  .habits{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:6px}
+  @media(max-width:560px){.habits{grid-template-columns:1fr}}
+  .habit{display:flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;user-select:none;transition:.12s}
+  .habit:hover{border-color:var(--accent2)}
+  .habit.on{border-color:var(--green);background:linear-gradient(120deg,rgba(52,211,153,.14),rgba(52,211,153,.04))}
+  .habit .e{font-size:22px}
+  .habit .ht{font-weight:700;font-size:14px}
+  .habit .box{margin-left:auto;width:24px;height:24px;border-radius:7px;border:1.5px solid var(--line);display:grid;place-items:center;font-weight:800;color:#0b0f1a}
+  .habit.on .box{background:var(--green);border-color:var(--green)}
+  .stats{display:flex;gap:10px;justify-content:center;margin:14px 0 2px;flex-wrap:wrap}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px 15px;font-size:13px;font-weight:700}
+  .stat .sv{font-size:18px;display:block}
+  .stat.streak{color:var(--amber)}.stat.banked{color:var(--green)}.stat.logged{color:var(--accent2)}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px 18px;font-weight:700;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:50;max-width:90vw;text-align:center}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .note{background:linear-gradient(120deg,rgba(124,92,255,.12),rgba(34,211,238,.08));border:1px solid var(--line);border-radius:16px;padding:18px;margin-top:20px;font-size:14px}
+  .disclaimer{font-size:12px;color:var(--muted);margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+  /* simulator */
+  .simgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px 16px}
+  @media(max-width:560px){.simgrid{grid-template-columns:1fr}}
+  .simgrid label{display:block;font-weight:700;font-size:13px;margin:0 0 6px;color:var(--muted)}
+  .simgrid select{padding:10px 12px;font-size:14px}
+  .simgrid .changed select{border-color:var(--accent2);box-shadow:0 0 0 1px rgba(34,211,238,.35)}
+  .simout{margin-top:18px;padding:16px;border-radius:14px;border:1px solid var(--line);background:var(--bg2);text-align:center}
+  .simout .big{font-size:clamp(22px,5vw,30px);font-weight:800;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
+  .simout .big.pos{color:var(--green)}.simout .big.neg{color:var(--red)}.simout .big.zero{color:var(--muted)}
+  .simout .det{font-size:13.5px;color:var(--muted);margin-top:6px}
+  .simout .det b{color:var(--txt)}
+  .history{display:flex;gap:4px;flex-wrap:wrap;margin-top:10px}
+  .dot{width:13px;height:13px;border-radius:4px;background:var(--bg2);border:1px solid var(--line)}
+  .dot.good{background:var(--green);border-color:var(--green)}
+  .dot.bad{background:var(--red);border-color:var(--red)}
+  .dot.mid{background:var(--amber);border-color:var(--amber)}
+  /* conditions checklist */
+  .checks{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:6px}
+  @media(max-width:560px){.checks{grid-template-columns:1fr}}
+  .chk{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:10px 12px;cursor:pointer;user-select:none;font-size:13.5px;font-weight:600}
+  .chk:hover{border-color:var(--accent2)}
+  .chk.on{border-color:var(--red);background:linear-gradient(120deg,rgba(251,113,133,.14),rgba(251,113,133,.04))}
+  .chk .cbox{margin-left:auto;width:20px;height:20px;border-radius:6px;border:1.5px solid var(--line);display:grid;place-items:center;font-weight:800;color:#0b0f1a;flex:none}
+  .chk.on .cbox{background:var(--red);border-color:var(--red)}
+  .chk .cd{color:var(--muted);font-weight:600;font-size:12px}
+  /* insights */
+  .insight{display:flex;gap:12px;align-items:center;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:8px;flex-wrap:wrap}
+  .insight .rank{flex:none;width:26px;height:26px;border-radius:8px;background:var(--grad);color:#0b0f1a;font-weight:800;display:grid;place-items:center;font-size:13px}
+  .insight .it{font-weight:700;font-size:14px}.insight .is{font-size:12.5px;color:var(--muted)}
+  .insight .ig{margin-left:auto;font-weight:800;color:var(--green);font-variant-numeric:tabular-nums;white-space:nowrap}
+  /* people / loved ones */
+  .people{display:grid;gap:10px;margin-top:6px}
+  .person{display:flex;gap:12px;align-items:center;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+  .person .pe{font-size:22px}
+  .person .pn{font-weight:700;font-size:14px}.person .ps{font-size:12.5px;color:var(--muted)}
+  .person .pv{margin-left:auto;text-align:right}
+  .person .pvn{font-weight:800;font-size:18px;color:var(--accent2);font-variant-numeric:tabular-nums}
+  .person .pvl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+  .person .rm{margin-left:6px;color:var(--muted);cursor:pointer;font-size:20px;line-height:1}
+  .person .rm:hover{color:var(--red)}
+  .pform{display:grid;grid-template-columns:1.4fr .7fr .9fr .8fr auto;gap:8px;margin-top:14px;align-items:end}
+  @media(max-width:560px){.pform{grid-template-columns:1fr 1fr}}
+  .pform label{font-size:11px;color:var(--muted);font-weight:700;display:block;margin-bottom:4px}
+  .pform input,.pform select{padding:9px 10px;font-size:14px}
+  footer{text-align:center;color:var(--muted);font-size:13px;margin-top:48px}
+  .tiny{font-size:12.5px;color:var(--muted)}
+  .seg{display:flex;gap:0;border:1px solid var(--line);border-radius:11px;overflow:hidden;margin-top:7px}
+  .seg button{flex:1;background:var(--bg2);border:none;color:var(--muted);padding:11px 6px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;border-right:1px solid var(--line)}
+  .seg button:last-child{border-right:none}
+  .seg button.on{background:var(--grad);color:#0b0f1a}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="badge">Personal · Conservative estimate</div>
+    <h1>Life <span class="g">Clock</span></h1>
+    <p class="sub">A countdown of the time you've got left — moved by how you live. Stack good days and the clock slows. Slip, and it speeds up.</p>
+  </header>
+
+  <!-- ============ SETUP ============ -->
+  <section id="setup" class="card hidden">
+    <h2 style="margin-top:0">Set your baseline</h2>
+    <p class="lead">Honest, rough answers are fine — this is a motivational mirror, not a medical test. You can change any of it later.</p>
+
+    <label class="fld">Date of birth</label>
+    <input type="date" id="f_dob">
+
+    <label class="fld">Sex at birth <span class="hint">affects baseline life expectancy</span></label>
+    <select id="f_sex">
+      <option value="male">Male</option>
+      <option value="female">Female</option>
+      <option value="other">Prefer not to say / other</option>
+    </select>
+
+    <div id="factorFields"></div>
+
+    <label class="fld" style="margin-top:24px">Health conditions <span class="hint">optional · tap any that apply</span></label>
+    <div id="conditionFields" class="checks"></div>
+
+    <div class="row" style="margin-top:22px">
+      <button class="btn" id="saveSetup">Start my clock →</button>
+      <button class="btn ghost" id="cancelSetup">Cancel</button>
+    </div>
+    <div class="disclaimer">⚠️ <b>Not medical advice.</b> These numbers are deliberately conservative, population-level averages from public health research — not a diagnosis or prognosis. Conditions overlap, so multiple selections are dampened rather than simply added. Real lifespan depends on genetics, luck, treatment, and a thousand things no app can see. 🔒 Everything you enter — including any health conditions — is stored <b>only in this browser</b> and never sent anywhere.</div>
+  </section>
+
+  <!-- ============ MAIN ============ -->
+  <section id="main" class="hidden">
+    <div class="card glow clockwrap">
+      <div class="tiny" style="letter-spacing:2px;text-transform:uppercase">Estimated time remaining</div>
+      <div class="clock" id="clock"></div>
+      <div class="clocksub" id="clocksub"></div>
+      <div class="deathline" id="deathline"></div>
+    </div>
+
+    <div class="stats">
+      <div class="stat streak"><span class="sv" id="sStreak">0</span>🔥 day streak</div>
+      <div class="stat banked"><span class="sv" id="sBanked">0</span>days banked</div>
+      <div class="stat logged"><span class="sv" id="sLogged">0</span>days logged</div>
+    </div>
+
+    <h2>Today's check-in</h2>
+    <p class="lead" id="checkinLead">Tick what's true for today. A full good day banks time and grows your streak. Each day in a streak compounds — the longer you hold it, the more each good day is worth.</p>
+    <div class="card">
+      <div class="habits" id="habits"></div>
+      <div class="row" style="margin-top:16px;justify-content:space-between">
+        <div class="tiny" id="dayPreview"></div>
+        <button class="btn" id="logDay">Log today</button>
+      </div>
+      <div class="tiny" id="streakProj" style="margin-top:12px;border-top:1px solid var(--line);padding-top:11px"></div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h3>Last 30 days</h3>
+      <div class="tiny">Green = good day · amber = mixed · red = a slip. Empty = not logged.</div>
+      <div class="history" id="history"></div>
+    </div>
+
+    <h2>Why your clock reads what it does</h2>
+    <p class="lead">Your baseline life expectancy, adjusted by each lifestyle factor. Green adds years, red takes them.</p>
+    <div class="card">
+      <div class="bars" id="bars"></div>
+      <div class="row" style="margin-top:18px;justify-content:space-between">
+        <div class="tiny" id="leSummary"></div>
+        <button class="btn ghost" id="editBaseline">Edit baseline</button>
+      </div>
+    </div>
+
+    <h2>Where you'll gain the most</h2>
+    <p class="lead">Your lifestyle factors ranked by upside — the most time you could buy back, biggest wins first. Hit <b>Simulate</b> to drop it straight into the what-if below.</p>
+    <div class="card"><div id="insights"></div></div>
+
+    <h2>What if… <span class="tiny" style="font-weight:400">— the simulator</span></h2>
+    <p class="lead">Change a factor below to see what it would do to your clock — without touching your real baseline. "What if I quit smoking? Got active? Slept more?"</p>
+    <div class="card">
+      <div id="simFields" class="simgrid"></div>
+      <div class="simout" id="simReadout"></div>
+      <div class="row" style="margin-top:14px;justify-content:space-between">
+        <button class="btn ghost" id="simReset">Reset to current</button>
+        <button class="btn" id="simApply">Make it real →</button>
+      </div>
+    </div>
+
+    <h2>Time with the people you love</h2>
+    <p class="lead">This one stings — in a useful way. Add people you don't live with and how often you actually see them. You'll see roughly how many visits you likely have left. (Rough estimates; stored only on this device.)</p>
+    <div class="card">
+      <div class="people" id="people"></div>
+      <div class="pform">
+        <div><label>Name</label><input id="p_name" type="text" maxlength="24" placeholder="Mom"></div>
+        <div><label>Age</label><input id="p_age" type="number" min="0" max="120" placeholder="58"></div>
+        <div><label>Sex</label><select id="p_sex"><option value="female">Female</option><option value="male">Male</option><option value="other">Other</option></select></div>
+        <div><label>Visits/yr</label><input id="p_visits" type="number" min="0" max="365" step="0.5" placeholder="2"></div>
+        <button class="btn" id="addPerson">Add</button>
+      </div>
+    </div>
+
+    <div class="note" id="motiv"></div>
+
+
+    <div class="disclaimer">⚠️ <b>Not medical advice.</b> A conservative, for-fun estimate from population-level research — not a prediction about you. If you're worried about your health, talk to a doctor, not a webpage. · <a href="#" id="resetAll">Reset everything</a></div>
+
+    <footer>Life Clock · spend your days on purpose</footer>
+  </section>
+
+  <section id="empty" class="hidden card" style="text-align:center">
+    <p class="lead" style="margin:0 auto 16px">Build a personal countdown clock from your lifestyle — then keep it honest with a daily check-in.</p>
+    <button class="btn" id="startBtn">Set up my Life Clock →</button>
+  </section>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- storage ---------- */
+const K={profile:'lc_profile',log:'lc_log',meta:'lc_meta'};
+function get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v);}catch(e){return d;}}
+function set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function todayKey(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function daysBetween(a,b){return Math.round((b-a)/86400000);}
+
+/* ---------- model: baseline life expectancy ---------- */
+const BASE={male:76,female:81,other:78}; // conservative
+
+/* Lifestyle factors. Each option carries a year delta (conservative). */
+const FACTORS=[
+  {id:'smoking',label:'Smoking',hint:'biggest single lever',opts:[
+    {v:0,t:'Never smoked',d:0},
+    {v:1,t:'Quit (5+ years ago)',d:-1},
+    {v:2,t:'Occasionally',d:-3},
+    {v:3,t:'Daily / regularly',d:-8}]},
+  {id:'alcohol',label:'Alcohol',opts:[
+    {v:0,t:'None / rarely',d:0},
+    {v:1,t:'Moderate',d:-0.5},
+    {v:2,t:'Heavy / most days',d:-5}]},
+  {id:'exercise',label:'Physical activity',opts:[
+    {v:0,t:'Sedentary',d:-4},
+    {v:1,t:'Light (a bit)',d:-1},
+    {v:2,t:'Active (150+ min/wk)',d:2},
+    {v:3,t:'Very active',d:4}]},
+  {id:'diet',label:'Diet quality',opts:[
+    {v:0,t:'Poor (fast/processed)',d:-4},
+    {v:1,t:'Average',d:-1},
+    {v:2,t:'Good (whole foods)',d:1},
+    {v:3,t:'Excellent (Mediterranean-ish)',d:3}]},
+  {id:'weight',label:'Weight range',hint:'rough BMI',opts:[
+    {v:0,t:'Underweight',d:-2},
+    {v:1,t:'Healthy',d:1},
+    {v:2,t:'Overweight',d:-1},
+    {v:3,t:'Obese',d:-4},
+    {v:4,t:'Severely obese',d:-8}]},
+  {id:'sleep',label:'Sleep',opts:[
+    {v:0,t:'Under 5h',d:-3},
+    {v:1,t:'5–6h',d:-1.5},
+    {v:2,t:'7–8h',d:1},
+    {v:3,t:'9h+ most nights',d:-1}]},
+  {id:'stress',label:'Stress & mood',opts:[
+    {v:0,t:'High, chronic',d:-3},
+    {v:1,t:'Moderate',d:-1},
+    {v:2,t:'Low / well-managed',d:1}]},
+  {id:'social',label:'Social connection',opts:[
+    {v:0,t:'Isolated',d:-3},
+    {v:1,t:'Some',d:0},
+    {v:2,t:'Strong, close ties',d:2}]}
+];
+
+/* Health conditions. Conservative year deltas; overlap is dampened (see conditionPenalty). */
+const CONDITIONS=[
+  {id:'t2diabetes',t:'Type 2 diabetes',d:-4},
+  {id:'t1diabetes',t:'Type 1 diabetes',d:-6},
+  {id:'hypertension',t:'High blood pressure',d:-2},
+  {id:'cholesterol',t:'High cholesterol',d:-1},
+  {id:'heartdisease',t:'Heart disease',d:-5},
+  {id:'heartfailure',t:'Heart failure',d:-8},
+  {id:'stroke',t:'Stroke (history)',d:-4},
+  {id:'cancer_active',t:'Cancer (in treatment)',d:-6},
+  {id:'cancer_remission',t:'Cancer (in remission)',d:-2},
+  {id:'copd',t:'COPD / chronic lung',d:-5},
+  {id:'kidney',t:'Chronic kidney disease',d:-4},
+  {id:'liver',t:'Liver disease',d:-4},
+  {id:'autoimmune',t:'Autoimmune condition',d:-2},
+  {id:'mentalhealth',t:'Chronic depression / anxiety',d:-2},
+  {id:'majorsurgery',t:'Major surgery (history)',d:-1},
+  {id:'fractures',t:'Fragility / major fractures',d:-1}
+];
+
+/* Rough remaining life expectancy (years) by current age — period-table-ish, sex-adjusted below.
+   Used for the "time with loved ones" estimates so older ages aren't wildly underestimated. */
+const REM_LE=[[0,79],[30,49],[40,40],[50,31],[55,27],[60,23],[65,19],[70,15],[75,12],[80,9],[85,6],[90,4],[95,3],[100,2]];
+function remainingLE(age,sex){
+  age=Math.max(0,Math.min(105,age));
+  let lo=REM_LE[0],hi=REM_LE[REM_LE.length-1];
+  for(let i=0;i<REM_LE.length-1;i++){if(age>=REM_LE[i][0]&&age<=REM_LE[i+1][0]){lo=REM_LE[i];hi=REM_LE[i+1];break;}}
+  const t=hi[0]===lo[0]?0:(age-lo[0])/(hi[0]-lo[0]);
+  let yrs=lo[1]+(hi[1]-lo[1])*t;
+  if(sex==='female')yrs+=2.5;else if(sex==='male')yrs-=1.5;
+  return Math.max(0.5,yrs);
+}
+
+/* Daily habits for the check-in. */
+const HABITS=[
+  {id:'move',e:'🏃',t:'Moved my body'},
+  {id:'eat',e:'🥗',t:'Ate well'},
+  {id:'water',e:'💧',t:'Stayed hydrated'},
+  {id:'sleep',e:'😴',t:'Slept 7–8h'},
+  {id:'nosmoke',e:'🚭',t:'No smoking'},
+  {id:'nobooze',e:'🍷',t:'No excess alcohol'},
+  {id:'calm',e:'🧘',t:'Managed stress'},
+  {id:'sun',e:'☀️',t:'Time outdoors'}
+];
+
+/* How much a day can swing the clock (in days of life). */
+const DAY_SWING=0.3;        // a perfect good day banks up to ~0.3 day; a fully bad day burns ~0.3
+const STREAK_STEP=0.012;    // each streak day adds this much bonus per good day...
+const STREAK_CAP=0.36;      // ...capped here (~30-day streak)
+const GOOD_THRESH=0.6;      // fraction of habits needed to count as a "good" day & grow streak
+const BAD_THRESH=0.34;      // below this is a "slip"
+
+/* ---------- compute ---------- */
+function profile(){return get(K.profile,null);}
+function factorDeltas(p){
+  const out={};let sum=0;
+  FACTORS.forEach(f=>{const o=f.opts.find(o=>o.v===p.factors[f.id]);const d=o?o.d:0;out[f.id]=d;sum+=d;});
+  return {out,sum};
+}
+function log(){return get(K.log,{});}            // {dateKey:{score, deltaDays, frac}}
+function bankedDays(){const L=log();let s=0;for(const k in L)s+=L[k].deltaDays;return s;}
+function loggedCount(){return Object.keys(log()).length;}
+
+/* current streak = consecutive good days ending today or yesterday */
+function currentStreak(){
+  const L=log();let streak=0;const d=new Date();
+  // allow today to be unlogged without breaking streak
+  for(let i=0;i<400;i++){
+    const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    const e=L[key];
+    if(e){ if(e.frac>=GOOD_THRESH)streak++; else break; }
+    else if(i>0){ break; }      // a gap (other than today) breaks the streak
+    d.setDate(d.getDate()-1);
+  }
+  return streak;
+}
+
+function currentAge(){const p=profile();if(!p||!p.dob)return 0;const dob=new Date(p.dob+'T00:00:00');return (Date.now()-dob)/(365.25*86400000);}
+/* Multiple conditions overlap, so don't just add: full weight to the worst, 60% to each of the rest. */
+function conditionPenalty(p){
+  const sel=p&&p.conditions?Object.keys(p.conditions).filter(k=>p.conditions[k]):[];
+  const mags=sel.map(id=>{const c=CONDITIONS.find(c=>c.id===id);return c?-c.d:0;}).filter(x=>x>0).sort((a,b)=>b-a);
+  if(!mags.length)return 0;
+  let pen=mags[0];for(let i=1;i<mags.length;i++)pen+=0.6*mags[i];
+  return -pen;
+}
+function adjustedLE(){
+  const p=profile();if(!p)return null;
+  const {sum}=factorDeltas(p);
+  const base=BASE[p.sex]||78;
+  const habitYears=bankedDays()/365.25;
+  const le=base+sum+conditionPenalty(p)+habitYears;
+  return Math.max(le,currentAge()+0.08); // never start already-expired; keep ~a month minimum
+}
+function deathDate(){
+  const p=profile();if(!p)return null;
+  const dob=new Date(p.dob+'T00:00:00');
+  const le=adjustedLE();
+  const d=new Date(dob);
+  const whole=Math.floor(le);
+  d.setFullYear(d.getFullYear()+whole);
+  d.setDate(d.getDate()+Math.round((le-whole)*365.25));
+  return d;
+}
+
+/* ---------- setup UI ---------- */
+const $=id=>document.getElementById(id);
+function buildFactorFields(){
+  const wrap=$('factorFields');wrap.innerHTML='';
+  const p=profile();
+  FACTORS.forEach(f=>{
+    const sel=document.createElement('select');sel.id='ff_'+f.id;
+    f.opts.forEach(o=>{const op=document.createElement('option');op.value=o.v;op.textContent=o.t+(o.d?'  ('+(o.d>0?'+':'')+o.d+'y)':'  (±0)');sel.appendChild(op);});
+    sel.value = (p&&p.factors&&p.factors[f.id]!=null)?p.factors[f.id]:1;
+    const lab=document.createElement('label');lab.className='fld';
+    lab.innerHTML=f.label+(f.hint?' <span class="hint">'+f.hint+'</span>':'');
+    wrap.appendChild(lab);wrap.appendChild(sel);
+  });
+}
+function buildConditionFields(){
+  const wrap=$('conditionFields');const p=profile();const cur=(p&&p.conditions)||{};
+  wrap.innerHTML=CONDITIONS.map(c=>`
+    <div class="chk ${cur[c.id]?'on':''}" data-c="${c.id}">
+      <span>${c.t} <span class="cd">(${c.d}y)</span></span>
+      <span class="cbox">${cur[c.id]?'✓':''}</span>
+    </div>`).join('');
+  wrap.querySelectorAll('.chk').forEach(el=>el.onclick=()=>{
+    el.classList.toggle('on');el.querySelector('.cbox').textContent=el.classList.contains('on')?'✓':'';
+  });
+}
+function showSetup(){
+  const p=profile();
+  buildFactorFields();buildConditionFields();
+  if(p){$('f_dob').value=p.dob;$('f_sex').value=p.sex;}
+  $('empty').classList.add('hidden');$('main').classList.add('hidden');$('setup').classList.remove('hidden');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+$('saveSetup').onclick=()=>{
+  const dob=$('f_dob').value;
+  if(!dob){toast('Please enter your date of birth');return;}
+  const dobD=new Date(dob+'T00:00:00');
+  if(isNaN(dobD)||dobD>new Date()){toast('That date of birth looks off');return;}
+  const factors={};FACTORS.forEach(f=>factors[f.id]=parseInt($('ff_'+f.id).value,10));
+  const conditions={};document.querySelectorAll('#conditionFields .chk.on').forEach(el=>conditions[el.dataset.c]=true);
+  const prev=profile()||{};
+  set(K.profile,{dob,sex:$('f_sex').value,factors,conditions,people:prev.people||[]});
+  $('setup').classList.add('hidden');
+  render();
+  toast('Clock started. Now keep it honest. 🕯️');
+};
+$('cancelSetup').onclick=()=>{$('setup').classList.add('hidden');render();};
+
+/* ---------- main render ---------- */
+let tickTimer=null;
+function pad(n){return String(n).padStart(2,'0');}
+function renderClock(){
+  const dd=deathDate();if(!dd){return;}
+  const now=new Date();let ms=dd-now;
+  const sub=$('clocksub');
+  if(ms<=0){
+    $('clock').innerHTML='<div class="unit"><div class="n">0</div><div class="l">remaining</div></div>';
+    sub.innerHTML='Your conservative estimate has elapsed — which mostly means every day now is a bonus. Spend it well. 🌅';
+    $('deathline').textContent='';
+    return;
+  }
+  let sec=Math.floor(ms/1000);
+  const years=Math.floor(sec/ (365.25*86400)); sec-=Math.floor(years*365.25*86400);
+  const days=Math.floor(sec/86400); sec-=days*86400;
+  const h=Math.floor(sec/3600); sec-=h*3600;
+  const m=Math.floor(sec/60); sec-=m*60;
+  const s=sec;
+  const U=[[years,'years'],[days,'days'],[h,'hours'],[m,'min'],[s,'sec']];
+  $('clock').innerHTML=U.map(u=>`<div class="unit"><div class="n">${u[0]}</div><div class="l">${u[1]}</div></div>`).join('');
+  const totalDays=Math.floor((dd-now)/86400000);
+  sub.innerHTML=`That's about <b>${totalDays.toLocaleString()}</b> days, or <b>${(totalDays/365.25).toFixed(1)}</b> years.`;
+  $('deathline').textContent='Conservative estimate: '+dd.toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});
+}
+function renderBars(){
+  const p=profile();const {out}=factorDeltas(p);
+  const base=BASE[p.sex]||78;
+  const habitYears=bankedDays()/365.25;
+  const cp=conditionPenalty(p);
+  const rows=[{bl:'Baseline ('+p.sex+')',v:0,base:true,baseVal:base}];
+  FACTORS.forEach(f=>rows.push({bl:f.label,v:out[f.id]}));
+  if(Math.abs(cp)>0.001)rows.push({bl:'Health conditions',v:cp});
+  rows.push({bl:'Banked habits',v:habitYears});
+  const maxAbs=Math.max(8,...rows.map(r=>Math.abs(r.v)));
+  $('bars').innerHTML=rows.map(r=>{
+    if(r.base)return `<div class="bar"><div class="bl">${r.bl}</div><div class="track"></div><div class="v zero">${r.baseVal}y</div></div>`;
+    const pct=Math.min(50,Math.abs(r.v)/maxAbs*50);
+    const cls=r.v>0.0001?'pos':(r.v<-0.0001?'neg':'zero');
+    const fill=r.v>0.0001?`<div class="fill pos" style="width:${pct}%"></div>`:(r.v<-0.0001?`<div class="fill neg" style="width:${pct}%"></div>`:'');
+    const txt=(r.v>0?'+':'')+(Math.abs(r.v)<0.1&&r.v!==0?r.v.toFixed(2):r.v.toFixed(r.v%1?1:0));
+    return `<div class="bar"><div class="bl">${r.bl}</div><div class="track"><div class="mid"></div>${fill}</div><div class="v ${cls}">${txt}${'y'}</div></div>`;
+  }).join('');
+  const le=adjustedLE();
+  $('leSummary').innerHTML=`Adjusted life expectancy: <b style="color:var(--txt)">${le.toFixed(1)} years</b> &nbsp;(base ${base} ${signed(factorDeltas(p).sum)} lifestyle ${Math.abs(cp)>0.001?signed(cp)+' conditions ':''}${signed(habitYears,2)} habits)`;
+}
+function signed(n,dp){const x=dp?n.toFixed(dp):(n%1?n.toFixed(1):n.toFixed(0));return (n>=0?'+ ':'− ')+Math.abs(x).toString().replace('-','');}
+
+/* habit check-in */
+let todayPicks={};
+function loadTodayPicks(){
+  const L=log();const e=L[todayKey()];
+  todayPicks={};
+  HABITS.forEach(h=>todayPicks[h.id]=e&&e.picks?!!e.picks[h.id]:false);
+}
+function renderHabits(){
+  const L=log();const logged=!!L[todayKey()];
+  $('habits').innerHTML=HABITS.map(h=>`
+    <div class="habit ${todayPicks[h.id]?'on':''}" data-h="${h.id}">
+      <span class="e">${h.e}</span><span class="ht">${h.t}</span>
+      <span class="box">${todayPicks[h.id]?'✓':''}</span>
+    </div>`).join('');
+  document.querySelectorAll('.habit').forEach(el=>el.onclick=()=>{
+    const id=el.dataset.h;todayPicks[id]=!todayPicks[id];renderHabits();updateDayPreview();
+  });
+  $('logDay').textContent=logged?'Update today':'Log today';
+  updateDayPreview();
+  const proj=streakProjection();
+  $('streakProj').innerHTML=`💡 <b>Buy-back math:</b> from your current streak, holding clean good days for 30 straight days banks about <b style="color:var(--green)">+${proj.toFixed(1)} days</b> (${Math.round(proj*24)} hours) of life — that's the compounding doing the work. Every clean day is time bought back; every slip is time spent.`;
+}
+function streakProjection(){
+  let s=currentStreak();let total=0;
+  for(let i=0;i<30;i++){total+=dayDelta(1,s);s++;}
+  return total;
+}
+function dayDelta(frac,streakSoFar){
+  // map fraction(0..1) to -1..+1 around the midpoint, scaled by swing
+  const centered=(frac-0.5)*2;            // -1..+1
+  let delta=centered*DAY_SWING;
+  if(frac>=GOOD_THRESH){
+    delta+=Math.min(STREAK_CAP,streakSoFar*STREAK_STEP); // compounding bonus
+  }
+  return delta;
+}
+function updateDayPreview(){
+  const frac=HABITS.filter(h=>todayPicks[h.id]).length/HABITS.length;
+  const streakSoFar=currentStreakExcludingToday();
+  const delta=dayDelta(frac,streakSoFar);
+  const hrs=(Math.abs(delta)*24).toFixed(1);
+  let msg;
+  if(delta>0.001)msg=`Good day → banks ~<b style="color:var(--green)">+${hrs}h</b> of life`+(frac>=GOOD_THRESH&&streakSoFar>0?` (incl. 🔥${streakSoFar}-day streak bonus)`:'');
+  else if(delta<-0.001)msg=`Slip → burns ~<b style="color:var(--red)">−${hrs}h</b> of life`;
+  else msg='A neutral day — clock holds steady.';
+  $('dayPreview').innerHTML=msg;
+}
+function currentStreakExcludingToday(){
+  const L=log();let streak=0;const d=new Date();d.setDate(d.getDate()-1);
+  for(let i=0;i<400;i++){
+    const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    const e=L[key];
+    if(e&&e.frac>=GOOD_THRESH)streak++;else break;
+    d.setDate(d.getDate()-1);
+  }
+  return streak;
+}
+$('logDay').onclick=()=>{
+  const frac=HABITS.filter(h=>todayPicks[h.id]).length/HABITS.length;
+  const streakSoFar=currentStreakExcludingToday();
+  const delta=dayDelta(frac,streakSoFar);
+  const L=log();
+  const picks={};HABITS.forEach(h=>picks[h.id]=!!todayPicks[h.id]);
+  L[todayKey()]={frac,deltaDays:delta,picks};
+  set(K.log,L);
+  render();
+  const hrs=(Math.abs(delta)*24).toFixed(1);
+  if(delta>0.001)toast(`Logged. +${hrs}h banked — streak now 🔥${currentStreak()}`);
+  else if(delta<-0.001)toast(`Logged honestly. −${hrs}h. Tomorrow's a clean slate.`);
+  else toast('Logged. Clock holds steady.');
+};
+function renderHistory(){
+  const L=log();const wrap=$('history');wrap.innerHTML='';
+  const d=new Date();d.setDate(d.getDate()-29);
+  for(let i=0;i<30;i++){
+    const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    const e=L[key];let cls='';
+    if(e){cls=e.frac>=GOOD_THRESH?'good':(e.frac<BAD_THRESH?'bad':'mid');}
+    const div=document.createElement('div');div.className='dot '+cls;
+    div.title=key+(e?` · ${Math.round(e.frac*100)}% · ${e.deltaDays>0?'+':''}${(e.deltaDays*24).toFixed(1)}h`:' · not logged');
+    wrap.appendChild(div);
+    d.setDate(d.getDate()+1);
+  }
+}
+function renderStats(){
+  $('sStreak').textContent=currentStreak();
+  const b=bankedDays();
+  $('sBanked').textContent=(b>=0?'+':'')+b.toFixed(1);
+  $('sLogged').textContent=loggedCount();
+}
+function renderMotiv(){
+  const streak=currentStreak();const b=bankedDays();
+  let msg;
+  if(streak>=14)msg=`🔥 <b>${streak} days strong.</b> This is who you are now. Each good day is worth more than the last — the streak is doing the heavy lifting. Don't break the chain.`;
+  else if(streak>=4)msg=`🔥 <b>${streak}-day streak.</b> Momentum is building and the compounding bonus is kicking in. Keep stacking days.`;
+  else if(b>0)msg=`You've banked <b>${b.toFixed(1)} days</b> of life so far. Small, boring, repeated good choices — that's the whole game.`;
+  else if(b<0)msg=`The clock's run down a little. That's just information, not a verdict. One good day starts a new streak — log it tonight.`;
+  else msg=`Fresh clock. The first good day is the hardest and the most important. What can you honestly tick off today?`;
+  $('motiv').innerHTML=msg;
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+/* ---------- insights: where you'll gain the most ---------- */
+function renderInsights(){
+  const p=profile();const {out}=factorDeltas(p);
+  const items=FACTORS.map(f=>{
+    const maxD=Math.max(...f.opts.map(o=>o.d));
+    const best=f.opts.find(o=>o.d===maxD);
+    return {f,gain:maxD-out[f.id],best};
+  }).filter(x=>x.gain>0.01).sort((a,b)=>b.gain-a.gain).slice(0,4);
+  if(!items.length){
+    $('insights').innerHTML="<div class=\"tiny\">You're already on the best option for every lifestyle factor. Genuinely impressive — from here it's all about consistency in the daily check-in. 💪</div>";
+    return;
+  }
+  $('insights').innerHTML=items.map((x,i)=>`
+    <div class="insight">
+      <span class="rank">${i+1}</span>
+      <span><span class="it">${x.f.label}: ${x.best.t}</span><br><span class="is">vs. where you are now</span></span>
+      <span class="ig">+${x.gain%1?x.gain.toFixed(1):x.gain} yrs</span>
+      <button class="btn ghost" style="padding:8px 12px;font-size:13px" data-sim="${x.f.id}" data-val="${x.best.v}">Simulate</button>
+    </div>`).join('');
+  $('insights').querySelectorAll('button[data-sim]').forEach(b=>b.onclick=()=>{
+    simPicks[b.dataset.sim]=parseInt(b.dataset.val,10);buildSimFields();renderSim();
+    $('simFields').scrollIntoView({behavior:'smooth',block:'center'});
+  });
+}
+
+/* ---------- time with loved ones ---------- */
+function people(){const p=profile();return (p&&p.people)||[];}
+function renderPeople(){
+  const list=people();const wrap=$('people');
+  if(!list.length){wrap.innerHTML='<div class="tiny">No one added yet. Add a parent, grandparent, or faraway friend below — it reframes everything.</div>';return;}
+  wrap.innerHTML=list.map((pp,i)=>{
+    const yrs=remainingLE(pp.age,pp.sex);
+    const visits=Math.round(yrs*pp.visits);
+    return `<div class="person">
+      <span class="pe">💛</span>
+      <span><span class="pn">${escapeHtml(pp.name)}</span><br><span class="ps">age ${pp.age} · ~${Math.round(yrs)} yrs left · ${pp.visits}×/yr</span></span>
+      <span class="pv"><span class="pvn">${visits.toLocaleString()}</span><span class="pvl">visits left</span></span>
+      <span class="rm" data-rm="${i}" title="Remove">×</span>
+    </div>`;
+  }).join('');
+  wrap.querySelectorAll('[data-rm]').forEach(el=>el.onclick=()=>{
+    const arr=people();arr.splice(parseInt(el.dataset.rm,10),1);
+    const p=profile();p.people=arr;set(K.profile,p);renderPeople();
+  });
+}
+$('addPerson').onclick=()=>{
+  const name=$('p_name').value.trim();
+  const age=parseInt($('p_age').value,10);
+  const visits=parseFloat($('p_visits').value);
+  if(!name){toast('Add a name');return;}
+  if(isNaN(age)||age<0||age>120){toast('Enter a valid age');return;}
+  if(isNaN(visits)||visits<0){toast('Enter visits per year');return;}
+  const p=profile();p.people=people().concat([{name,age,sex:$('p_sex').value,visits}]);set(K.profile,p);
+  $('p_name').value='';$('p_age').value='';$('p_visits').value='';
+  renderPeople();
+  const yrs=remainingLE(age,$('p_sex').value);
+  toast(`At ${visits}×/year, about ${Math.round(yrs*visits)} more times with ${name}. Make them count.`);
+};
+
+/* ---------- what-if simulator ---------- */
+let simPicks=null;
+function initSim(){const p=profile();simPicks={};FACTORS.forEach(f=>simPicks[f.id]=p.factors[f.id]);}
+function buildSimFields(){
+  const p=profile();
+  $('simFields').innerHTML=FACTORS.map(f=>{
+    const opts=f.opts.map(o=>`<option value="${o.v}" ${o.v===simPicks[f.id]?'selected':''}>${o.t}${o.d?' ('+(o.d>0?'+':'')+o.d+'y)':' (±0)'}</option>`).join('');
+    const changed=simPicks[f.id]!==p.factors[f.id];
+    return `<div class="simfield ${changed?'changed':''}"><label>${f.label}</label><select data-sf="${f.id}">${opts}</select></div>`;
+  }).join('');
+  $('simFields').querySelectorAll('select').forEach(sel=>sel.onchange=()=>{simPicks[sel.dataset.sf]=parseInt(sel.value,10);buildSimFields();renderSim();});
+}
+function simSum(){let s=0;FACTORS.forEach(f=>{const o=f.opts.find(o=>o.v===simPicks[f.id]);s+=o?o.d:0;});return s;}
+function renderSim(){
+  const p=profile();const base=BASE[p.sex]||78;const habitYears=bankedDays()/365.25;
+  const curLE=adjustedLE();
+  const newLE=Math.max(base+simSum()+conditionPenalty(p)+habitYears,currentAge()+0.08);
+  const delta=newLE-curLE;
+  const dob=new Date(p.dob+'T00:00:00');
+  const nd=new Date(dob);const whole=Math.floor(newLE);nd.setFullYear(nd.getFullYear()+whole);nd.setDate(nd.getDate()+Math.round((newLE-whole)*365.25));
+  const cls=delta>0.01?'pos':(delta<-0.01?'neg':'zero');
+  const sign=delta>0?'+':(delta<0?'−':'');
+  const days=Math.abs(delta)*365.25;
+  const head=Math.abs(delta)<0.01?'<div class="big zero">No change yet</div>':`<div class="big ${cls}">${sign}${Math.abs(delta).toFixed(1)} years</div>`;
+  const detail=Math.abs(delta)<0.01?'Change a factor above to simulate.':`That's roughly <b>${sign}${Math.round(days).toLocaleString()} days</b>. New estimate: <b>${nd.toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'})}</b>.`;
+  $('simReadout').innerHTML=head+`<div class="det">${detail}</div>`;
+  $('simApply').disabled=!FACTORS.some(f=>simPicks[f.id]!==p.factors[f.id]);
+}
+$('simReset').onclick=()=>{initSim();buildSimFields();renderSim();};
+$('simApply').onclick=()=>{
+  if(!confirm('Update your real baseline to match this simulation?'))return;
+  const p=profile();FACTORS.forEach(f=>p.factors[f.id]=simPicks[f.id]);set(K.profile,p);
+  render();toast('Baseline updated to match your simulation. 🎯');
+};
+
+function render(){
+  if(!profile()){$('main').classList.add('hidden');$('empty').classList.remove('hidden');return;}
+  $('empty').classList.add('hidden');$('setup').classList.add('hidden');$('main').classList.remove('hidden');
+  loadTodayPicks();initSim();
+  renderClock();renderBars();renderHabits();renderHistory();renderStats();renderMotiv();
+  renderInsights();renderPeople();
+  buildSimFields();renderSim();
+  if(tickTimer)clearInterval(tickTimer);
+  tickTimer=setInterval(renderClock,1000);
+}
+
+/* ---------- misc ---------- */
+let toastT=null;
+function toast(msg){const t=$('toast');t.innerHTML=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),3200);}
+$('startBtn').onclick=showSetup;
+$('editBaseline').onclick=showSetup;
+$('resetAll').onclick=e=>{e.preventDefault();if(confirm('Reset your Life Clock and erase all logged days? This cannot be undone.')){localStorage.removeItem(K.profile);localStorage.removeItem(K.log);localStorage.removeItem(K.meta);location.reload();}};
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)render();});
+
+render();
+</script>
+</body>
+</html>

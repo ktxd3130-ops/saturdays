@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saturdays — the childhood you can't get back, made visible</title>
+<meta name="description" content="You get about 940 Saturdays with your kid before they're grown. See how many you have left — and make them count.">
+<style>
+  :root{
+    --bg:#17110d; --bg2:#1f1812; --card:#241c15; --card2:#2c2218; --line:#3a2d20;
+    --txt:#f6ece0; --muted:#b29a83; --gold:#f5b14c; --peach:#ff9e7d; --rose:#f08a8a;
+    --present:#9bd4a0; --grad:linear-gradient(120deg,#f5b14c,#ff9e7d);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:radial-gradient(1100px 560px at 78% -8%,#34251a 0%,var(--bg) 58%);
+    color:var(--txt);line-height:1.6;-webkit-font-smoothing:antialiased;padding-bottom:84px}
+  .wrap{max-width:860px;margin:0 auto;padding:0 22px}
+  a{color:var(--peach);text-decoration:none}
+  header{padding:46px 0 14px;text-align:center}
+  .badge{display:inline-block;font-size:11.5px;letter-spacing:2.4px;text-transform:uppercase;color:var(--gold);
+    border:1px solid var(--line);padding:6px 14px;border-radius:999px;margin-bottom:18px}
+  h1{font-size:clamp(34px,7vw,58px);line-height:1.02;font-weight:800;letter-spacing:-1.6px}
+  h1 .g{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--muted);font-size:clamp(15px,2.2vw,18px);max-width:540px;margin:16px auto 0}
+  h2{font-size:23px;font-weight:800;letter-spacing:-.5px;margin:44px 0 6px}
+  h3{font-size:17px;font-weight:800;margin:0 0 4px}
+  .lead{color:var(--muted);margin-bottom:18px;max-width:680px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px}
+  .hidden{display:none!important}
+  label.fld{display:block;font-weight:700;font-size:14px;margin:16px 0 7px}
+  label.fld .hint{font-weight:400;color:var(--muted);font-size:12.5px;margin-left:6px}
+  input[type=date],input[type=text],input[type=number],select{width:100%;background:var(--bg2);
+    border:1px solid var(--line);border-radius:12px;color:var(--txt);padding:12px 14px;font-size:15px;font-family:inherit}
+  input:focus,select:focus{outline:none;border-color:var(--gold)}
+  .btn{background:var(--grad);color:#1a120b;border:none;font-weight:800;padding:13px 20px;border-radius:12px;
+    font-size:15px;cursor:pointer;font-family:inherit}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--txt)}
+  .btn.sm{padding:9px 13px;font-size:13px}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .tiny{font-size:12.5px;color:var(--muted)}
+  .disclaimer{font-size:12px;color:var(--muted);margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+  footer{text-align:center;color:var(--muted);font-size:13px;margin-top:46px}
+
+  /* kid hero cards */
+  .kidcard{background:linear-gradient(160deg,var(--card2),var(--card));border:1px solid var(--line);
+    border-radius:20px;padding:22px;margin-top:16px;position:relative;overflow:hidden}
+  .kidcard:before{content:"";position:absolute;inset:0;background:radial-gradient(420px 200px at 90% -30%,rgba(245,177,76,.12),transparent 60%);pointer-events:none}
+  .kidhead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .kidname{font-size:21px;font-weight:800;letter-spacing:-.4px}
+  .kidage{font-size:13px;color:var(--muted)}
+  .bigrow{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0 6px}
+  @media(max-width:560px){.bigrow{gap:8px}}
+  .big{background:var(--bg2);border:1px solid var(--line);border-radius:15px;padding:16px 10px;text-align:center}
+  .big .n{font-size:clamp(28px,7vw,42px);font-weight:800;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-1px;
+    background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .big .l{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);margin-top:8px}
+  .spent{margin-top:6px}
+  .progress{height:9px;background:var(--bg2);border:1px solid var(--line);border-radius:999px;overflow:hidden;margin-top:8px}
+  .progress > i{display:block;height:100%;background:var(--grad);border-radius:999px}
+  .spentline{font-size:12.5px;color:var(--muted);margin-top:8px}
+  .spentline b{color:var(--txt)}
+  .ticker{display:flex;gap:7px;justify-content:flex-start;flex-wrap:wrap;margin-top:14px}
+  .ti{background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:8px 10px;min-width:58px;text-align:center}
+  .ti .tn{font-size:18px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+  .ti .tl{font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-top:4px}
+  .grown{color:var(--gold);font-weight:700;margin-top:10px}
+
+  /* timelines */
+  .tlwrap{overflow-x:auto}
+  .tlsentence{font-size:clamp(16px,3vw,21px);font-weight:700;line-height:1.4;letter-spacing:-.3px}
+  .tlsentence b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+  /* presence */
+  .stats{display:flex;gap:10px;justify-content:center;margin:6px 0 2px;flex-wrap:wrap}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px 15px;font-size:13px;font-weight:700}
+  .stat .sv{font-size:18px;display:block}
+  .stat.streak{color:var(--gold)}.stat.present{color:var(--present)}.stat.logged{color:var(--peach)}
+  .habits{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:6px}
+  @media(max-width:560px){.habits{grid-template-columns:1fr}}
+  .habit{display:flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;
+    padding:12px 14px;cursor:pointer;user-select:none;transition:.12s}
+  .habit:hover{border-color:var(--gold)}
+  .habit.on{border-color:var(--present);background:linear-gradient(120deg,rgba(155,212,160,.14),rgba(155,212,160,.04))}
+  .habit .e{font-size:21px}
+  .habit .ht{font-weight:700;font-size:14px}
+  .habit .box{margin-left:auto;width:24px;height:24px;border-radius:7px;border:1.5px solid var(--line);display:grid;place-items:center;font-weight:800;color:#1a120b}
+  .habit.on .box{background:var(--present);border-color:var(--present)}
+  .history{display:flex;gap:4px;flex-wrap:wrap;margin-top:10px}
+  .dot{width:13px;height:13px;border-radius:4px;background:var(--bg2);border:1px solid var(--line)}
+  .dot.good{background:var(--present);border-color:var(--present)}
+  .dot.mid{background:var(--gold);border-color:var(--gold)}
+  .note{background:linear-gradient(120deg,rgba(245,177,76,.12),rgba(255,158,125,.08));border:1px solid var(--line);
+    border-radius:16px;padding:18px;margin-top:18px;font-size:14px}
+
+  /* reveal */
+  .revealbox{text-align:center}
+  #revealCanvas{width:100%;max-width:340px;border-radius:18px;border:1px solid var(--line);display:inline-block}
+
+  /* people list / forms */
+  .plist{display:grid;gap:10px;margin-top:6px}
+  .pitem{display:flex;gap:12px;align-items:center;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+  .pitem .pe{font-size:20px}
+  .pitem .pn{font-weight:700;font-size:14px}.pitem .ps{font-size:12.5px;color:var(--muted)}
+  .pitem .rm{margin-left:auto;color:var(--muted);cursor:pointer;font-size:20px;line-height:1}
+  .pitem .rm:hover{color:var(--rose)}
+  .miniform{display:grid;grid-template-columns:1.4fr 1fr auto;gap:8px;margin-top:14px;align-items:end}
+  @media(max-width:560px){.miniform{grid-template-columns:1fr 1fr}}
+  .miniform label{font-size:11px;color:var(--muted);font-weight:700;display:block;margin-bottom:4px}
+  .miniform input,.miniform select{padding:10px 11px;font-size:14px}
+  .kidrow{display:grid;grid-template-columns:1.4fr 1fr .9fr auto;gap:8px;margin-top:10px;align-items:end}
+  @media(max-width:560px){.kidrow{grid-template-columns:1fr 1fr}}
+
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--card2);
+    border:1px solid var(--line);border-radius:12px;padding:12px 18px;font-weight:700;font-size:14px;opacity:0;
+    transition:.25s;pointer-events:none;z-index:50;max-width:90vw;text-align:center}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="badge">For the years that don't come back</div>
+    <h1><span class="g">Saturdays</span></h1>
+    <p class="sub">You get about <b style="color:var(--txt)">940 Saturdays</b> with your kid before they're grown. This makes the ones you have left impossible to ignore.</p>
+  </header>
+
+  <!-- ============ EMPTY / FIRST RUN ============ -->
+  <section id="empty" class="hidden card" style="text-align:center">
+    <p class="lead" style="margin:0 auto 16px;max-width:520px">Add your kids and watch the Saturdays, summers, and bedtimes you have left before they leave home. Everything stays on this device — nothing is sent anywhere.</p>
+    <button class="btn" id="startBtn">Start →</button>
+  </section>
+
+  <!-- ============ SETUP ============ -->
+  <section id="setup" class="card hidden">
+    <h2 style="margin-top:0">Who are we counting?</h2>
+    <p class="lead">Add each kid with their birthday. "Leaving home" defaults to 18 — change it if that's not your number. You can edit all of this later.</p>
+
+    <div id="kidFields"></div>
+    <button class="btn ghost sm" id="addKidRow" style="margin-top:12px">+ Add another kid</button>
+
+    <h3 style="margin-top:26px">Optional — for the family timeline</h3>
+    <p class="tiny" style="margin-bottom:6px">Add yourself (and your own parents) to see the overlap: where everyone will be when your youngest grows up.</p>
+    <div class="miniform" style="grid-template-columns:1.4fr 1fr 1fr">
+      <div><label>You — name</label><input type="text" id="self_name" maxlength="24" placeholder="You"></div>
+      <div><label>Your birthday</label><input type="date" id="self_dob"></div>
+      <div><label>Sex</label><select id="self_sex"><option value="female">Female</option><option value="male">Male</option><option value="other">—</option></select></div>
+    </div>
+
+    <div class="row" style="margin-top:24px">
+      <button class="btn" id="saveSetup">See my Saturdays →</button>
+      <button class="btn ghost" id="cancelSetup">Cancel</button>
+    </div>
+    <div class="disclaimer">🔒 Stored only in this browser — never uploaded, never sold. Kids' data is sensitive; we keep it on your device on purpose. The numbers are simple time math, meant to make the present vivid — not a prediction about anyone.</div>
+  </section>
+
+  <!-- ============ MAIN ============ -->
+  <section id="main" class="hidden">
+
+    <div id="kidCards"></div>
+
+    <h2>Where everyone will be</h2>
+    <p class="lead">The overlap is the part that hits. Your life, your kids' childhoods, your parents' years — on one line.</p>
+    <div class="card">
+      <div class="note" id="tlSentenceWrap" style="margin-top:0"><div class="tlsentence" id="tlSentence"></div></div>
+      <div class="tlwrap"><div id="timeline" style="margin-top:16px"></div></div>
+      <div class="row" style="margin-top:14px;justify-content:flex-end">
+        <button class="btn ghost sm" id="editPeople">Edit people</button>
+      </div>
+    </div>
+
+    <h2>Today's presence</h2>
+    <p class="lead">The clock only matters if it changes a day. Tick what was true today — phone down, fully there. Hold the chain.</p>
+    <div class="stats">
+      <div class="stat streak"><span class="sv" id="sStreak">0</span>🔥 day streak</div>
+      <div class="stat present"><span class="sv" id="sPresent">0</span>present days</div>
+      <div class="stat logged"><span class="sv" id="sLogged">0</span>days logged</div>
+    </div>
+    <div class="card">
+      <div class="habits" id="habits"></div>
+      <div class="row" style="margin-top:16px;justify-content:space-between">
+        <div class="tiny" id="dayPreview"></div>
+        <button class="btn" id="logDay">Log today</button>
+      </div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <h3>Last 30 days</h3>
+      <div class="tiny">Green = a present day · gold = a partial one · empty = not logged.</div>
+      <div class="history" id="history"></div>
+    </div>
+    <div class="note" id="motiv"></div>
+
+    <h2>The reveal</h2>
+    <p class="lead">One image. The number that changes how you spend Saturday. Save it, set it as your lock screen, or share it.</p>
+    <div class="card revealbox">
+      <div class="row" style="justify-content:center;margin-bottom:14px">
+        <select id="revealKid" style="max-width:220px"></select>
+        <select id="revealUnit" style="max-width:160px">
+          <option value="sat">Saturdays</option>
+          <option value="sum">Summers</option>
+          <option value="bed">Bedtimes</option>
+        </select>
+      </div>
+      <canvas id="revealCanvas" width="1080" height="1080"></canvas>
+      <div class="row" style="justify-content:center;margin-top:16px">
+        <button class="btn" id="downloadReveal">Save image</button>
+      </div>
+    </div>
+
+    <div class="disclaimer">A simple, loving piece of time math — not a prediction about anyone's life. If watching it ever feels heavy instead of clarifying, close it. The goal is to be here more, not to dread. · <a href="#" id="resetAll">Reset everything</a></div>
+    <footer>Saturdays · be present for the time you can't get back</footer>
+  </section>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   Saturdays — single-file, localStorage only, no backend.
+   Time math that makes a childhood countdown vivid.
+   ============================================================ */
+
+/* ---------- storage ---------- */
+const K={profile:'sat_profile',presence:'sat_presence'};
+function get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v);}catch(e){return d;}}
+function set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+const $=id=>document.getElementById(id);
+
+/* ---------- date helpers ---------- */
+function parseDate(s){return s?new Date(s+'T00:00:00'):null;}
+function addYears(d,y){const n=new Date(d);n.setFullYear(n.getFullYear()+y);return n;}
+function startOfToday(){const d=new Date();d.setHours(0,0,0,0);return d;}
+function ageAt(dob,at){return (at-dob)/(365.25*86400000);}
+function daysBetween(a,b){return Math.max(0,Math.round((b-a)/86400000));}
+function fmtDate(d){return d.toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});}
+function todayKey(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+
+/* count occurrences of weekday `wd` (0=Sun..6=Sat) in the interval (a, b] */
+function countWeekday(a,b,wd){
+  const start=new Date(a);start.setHours(0,0,0,0);
+  const end=new Date(b);end.setHours(0,0,0,0);
+  if(end<=start)return 0;
+  const first=new Date(start);
+  let diff=(wd-first.getDay()+7)%7;
+  if(diff===0)diff=7;            // strictly after start
+  first.setDate(first.getDate()+diff);
+  if(first>end)return 0;
+  return Math.floor((end-first)/(7*86400000))+1;
+}
+/* count annual markers (month 0-11, day) in (a, b] — used for "summers" (Jul 1) */
+function countAnnual(a,b,month,day){
+  let c=0;
+  for(let y=a.getFullYear();y<=b.getFullYear();y++){
+    const m=new Date(y,month,day);m.setHours(0,0,0,0);
+    if(m>a&&m<=b)c++;
+  }
+  return c;
+}
+
+/* rough life expectancy (for timeline bar length only — never shown as a number) */
+const LE={male:78,female:83,other:80};
+
+/* ---------- profile model ---------- */
+/* profile = { self:{name,dob,sex}|null, kids:[{id,name,dob,indepAge}], parents:[{id,name,dob,sex}] } */
+function profile(){return get(K.profile,null);}
+function kids(){const p=profile();return (p&&p.kids)||[];}
+let _id=0;function uid(){return 'k'+(Date.now().toString(36))+(_id++);}
+
+function kidStats(k){
+  const dob=parseDate(k.dob);
+  const indep=addYears(dob,k.indepAge);
+  const now=new Date();const today=startOfToday();
+  const grown=indep<=now;
+  return {
+    dob,indep,grown,
+    ageNow:Math.max(0,ageAt(dob,now)),
+    satLeft:countWeekday(today,indep,6),
+    satTotal:countWeekday(dob,indep,6),
+    sumLeft:countAnnual(today,indep,6,1),
+    sumTotal:countAnnual(dob,indep,6,1),
+    bedLeft:daysBetween(today,indep),
+    bedTotal:daysBetween(dob,indep),
+    msLeft:indep-now
+  };
+}
+
+/* ---------- setup UI ---------- */
+function kidRowHtml(k,i){
+  return `<div class="kidrow" data-row="${i}">
+    <div><label class="tiny" style="display:block;margin-bottom:4px">Name</label><input type="text" class="k_name" maxlength="24" placeholder="Kid's name" value="${k?escapeAttr(k.name):''}"></div>
+    <div><label class="tiny" style="display:block;margin-bottom:4px">Birthday</label><input type="date" class="k_dob" value="${k?k.dob:''}"></div>
+    <div><label class="tiny" style="display:block;margin-bottom:4px">Leaves at</label><input type="number" class="k_age" min="1" max="40" value="${k?k.indepAge:18}"></div>
+    <button class="btn ghost sm rmKid" title="Remove" type="button" style="height:42px">×</button>
+  </div>`;
+}
+function buildKidFields(){
+  const ks=kids();
+  const wrap=$('kidFields');
+  wrap.innerHTML = (ks.length?ks:[null]).map((k,i)=>kidRowHtml(k,i)).join('');
+  bindKidRows();
+  const p=profile();
+  if(p&&p.self){$('self_name').value=p.self.name||'';$('self_dob').value=p.self.dob||'';if(p.self.sex)$('self_sex').value=p.self.sex;}
+}
+function bindKidRows(){
+  $('kidFields').querySelectorAll('.rmKid').forEach(b=>b.onclick=()=>{
+    const rows=$('kidFields').querySelectorAll('.kidrow');
+    if(rows.length<=1){b.closest('.kidrow').querySelectorAll('input').forEach(inp=>inp.value=inp.classList.contains('k_age')?'18':'');return;}
+    b.closest('.kidrow').remove();
+  });
+}
+$('addKidRow').onclick=()=>{
+  const wrap=$('kidFields');
+  wrap.insertAdjacentHTML('beforeend',kidRowHtml(null,wrap.children.length));
+  bindKidRows();
+};
+function showSetup(){
+  buildKidFields();
+  $('empty').classList.add('hidden');$('main').classList.add('hidden');$('setup').classList.remove('hidden');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+$('saveSetup').onclick=()=>{
+  const rows=[...$('kidFields').querySelectorAll('.kidrow')];
+  const newKids=[];
+  for(const r of rows){
+    const name=r.querySelector('.k_name').value.trim();
+    const dob=r.querySelector('.k_dob').value;
+    const age=parseInt(r.querySelector('.k_age').value,10);
+    if(!name&&!dob)continue;
+    if(!name){toast('Give each kid a name');return;}
+    if(!dob){toast(`Add ${name}'s birthday`);return;}
+    const d=parseDate(dob);
+    if(isNaN(d)||d>new Date()){toast(`${name}'s birthday looks off`);return;}
+    if(!age||age<1||age>40){toast('Leaving age should be 1–40');return;}
+    newKids.push({id:uid(),name,dob,indepAge:age});
+  }
+  if(!newKids.length){toast('Add at least one kid to begin');return;}
+  const prev=profile()||{};
+  const selfName=$('self_name').value.trim();const selfDob=$('self_dob').value;
+  const self=selfDob?{name:selfName||'You',dob:selfDob,sex:$('self_sex').value}:(selfName?{name:selfName,dob:'',sex:$('self_sex').value}:null);
+  set(K.profile,{self,kids:newKids,parents:prev.parents||[]});
+  $('setup').classList.add('hidden');
+  render();
+  toast('There they are. Now make them count. 🌅');
+};
+$('cancelSetup').onclick=()=>{$('setup').classList.add('hidden');render();};
+
+/* ---------- kid hero cards ---------- */
+let tickTimer=null;
+function ordinalUnits(ms){
+  let sec=Math.max(0,Math.floor(ms/1000));
+  const years=Math.floor(sec/(365.25*86400));sec-=Math.floor(years*365.25*86400);
+  const days=Math.floor(sec/86400);sec-=days*86400;
+  const h=Math.floor(sec/3600);sec-=h*3600;
+  const m=Math.floor(sec/60);sec-=m*60;
+  return [[years,'yrs'],[days,'days'],[h,'hrs'],[m,'min'],[sec,'sec']];
+}
+function renderKidCards(){
+  const ks=kids();
+  $('kidCards').innerHTML=ks.map(k=>{
+    const s=kidStats(k);
+    if(s.grown){
+      return `<div class="kidcard"><div class="kidhead"><span class="kidname">${escapeHtml(k.name)}</span>
+        <span class="kidage">now ${Math.floor(s.ageNow)}</span></div>
+        <div class="grown">🕊️ ${escapeHtml(k.name)} has reached ${k.indepAge}. The count is done — now it's about the visits. Every one counts.</div></div>`;
+    }
+    const pct=Math.round((1-s.satLeft/s.satTotal)*100);
+    return `<div class="kidcard" data-kid="${k.id}">
+      <div class="kidhead"><span class="kidname">${escapeHtml(k.name)}</span>
+        <span class="kidage">${ageLabel(s.ageNow)} · leaves home around ${fmtDate(s.indep)}</span></div>
+      <div class="bigrow">
+        <div class="big"><div class="n">${s.satLeft.toLocaleString()}</div><div class="l">Saturdays left</div></div>
+        <div class="big"><div class="n">${s.sumLeft.toLocaleString()}</div><div class="l">Summers left</div></div>
+        <div class="big"><div class="n">${s.bedLeft.toLocaleString()}</div><div class="l">Bedtimes left</div></div>
+      </div>
+      <div class="spent">
+        <div class="progress"><i style="width:${pct}%"></i></div>
+        <div class="spentline">You've spent <b>${(s.satTotal-s.satLeft).toLocaleString()}</b> of ${s.satTotal.toLocaleString()} Saturdays — about <b>${pct}%</b> of their childhood at home.</div>
+      </div>
+      <div class="ticker" data-ms="${k.id}"></div>
+    </div>`;
+  }).join('');
+  tickKidCards();
+}
+function tickKidCards(){
+  kids().forEach(k=>{
+    const el=document.querySelector(`.ticker[data-ms="${k.id}"]`);
+    if(!el)return;
+    const s=kidStats(k);
+    el.innerHTML=ordinalUnits(s.msLeft).map(u=>`<div class="ti"><div class="tn">${u[0]}</div><div class="tl">${u[1]}</div></div>`).join('')
+      +`<div class="ti" style="border:none;background:none;text-align:left;min-width:auto;align-self:center"><div class="tl" style="margin:0">until ${escapeHtml(k.name)}<br>leaves home</div></div>`;
+  });
+}
+
+function ageLabel(a){
+  if(a<2)return Math.round(a*12)+' months old';
+  return Math.floor(a)+' years old';
+}
+
+/* ---------- overlapping family timelines ---------- */
+function timelinePeople(){
+  const p=profile();const out=[];
+  if(p.self&&p.self.dob)out.push({name:p.self.name||'You',dob:parseDate(p.self.dob),sex:p.self.sex,kind:'self'});
+  kids().forEach(k=>out.push({name:k.name,dob:parseDate(k.dob),kind:'kid',indepAge:k.indepAge}));
+  (p.parents||[]).forEach(pr=>out.push({name:pr.name,dob:parseDate(pr.dob),sex:pr.sex,kind:'parent'}));
+  return out;
+}
+function youngestKid(){
+  const ks=kids();if(!ks.length)return null;
+  return ks.reduce((a,b)=>parseDate(a.dob)>parseDate(b.dob)?a:b);
+}
+function renderTimeline(){
+  const ppl=timelinePeople();
+  const yk=youngestKid();
+  const sentenceEl=$('tlSentence');
+  if(!yk){$('timeline').innerHTML='';sentenceEl.textContent='';return;}
+  const milestone=addYears(parseDate(yk.dob),yk.indepAge);
+  const now=new Date();
+
+  /* sentence */
+  const others=ppl.filter(x=>x.kind!=='kid');
+  let parts=others.map(o=>`${o.name==='You'?'you':o.name} will be <b>${Math.floor(ageAt(o.dob,milestone))}</b>`);
+  let sentence=`When ${escapeHtml(yk.name)} turns ${yk.indepAge} in ${milestone.getFullYear()}, `;
+  if(parts.length){sentence+=parts.join(', and ')+'.';}
+  else{sentence+=`that's ${kidStats(yk).satLeft.toLocaleString()} Saturdays from now.`;}
+  sentenceEl.innerHTML=sentence;
+
+  if(!ppl.length){$('timeline').innerHTML='<div class="tiny">Add yourself or your parents above to see the overlap.</div>';return;}
+
+  /* scale */
+  const minBirth=Math.min(...ppl.map(x=>x.dob.getTime()));
+  const tMin=new Date(minBirth);
+  let tMaxMs=Math.max(milestone.getTime(),now.getTime());
+  const span=tMaxMs-tMin.getTime();
+  tMaxMs+=span*0.05;
+  const W=1000,L=104,R=58,rowH=46,top=58,bot=34;
+  const plotW=W-L-R;
+  const H=top+ppl.length*rowH+bot;
+  const x=t=>L+((t-tMin.getTime())/(tMaxMs-tMin.getTime()))*plotW;
+  const colors={self:'var(--gold)',kid:'var(--peach)',parent:'#caa6e0'};
+
+  let svg=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:560px" font-family="inherit">`;
+  /* milestone + today verticals */
+  const xToday=x(now.getTime()),xMile=x(milestone.getTime());
+  svg+=`<line x1="${xToday}" y1="${top-14}" x2="${xToday}" y2="${H-bot+6}" stroke="var(--gold)" stroke-width="1.5" opacity=".55"/>`;
+  svg+=`<text x="${xToday}" y="${top-20}" fill="var(--gold)" font-size="13" font-weight="700" text-anchor="middle">today</text>`;
+  svg+=`<line x1="${xMile}" y1="${top-14}" x2="${xMile}" y2="${H-bot+6}" stroke="var(--peach)" stroke-width="1.5" stroke-dasharray="5 5" opacity=".7"/>`;
+  svg+=`<text x="${Math.min(xMile,W-90)}" y="${H-8}" fill="var(--peach)" font-size="12.5" font-weight="700" text-anchor="middle">${escapeHtml(yk.name)} → ${yk.indepAge} (${milestone.getFullYear()})</text>`;
+
+  ppl.forEach((pn,i)=>{
+    const y=top+i*rowH+rowH/2;
+    const le=pn.kind==='kid'?90:(LE[pn.sex]||80);
+    const barEnd=Math.min(addYears(pn.dob,le).getTime(),tMaxMs);
+    const x0=x(pn.dob.getTime()),x1=x(barEnd),xn=x(Math.min(now.getTime(),barEnd));
+    const col=colors[pn.kind]||'var(--peach)';
+    /* full faded bar */
+    svg+=`<rect x="${x0}" y="${y-7}" width="${Math.max(2,x1-x0)}" height="14" rx="7" fill="${col}" opacity=".16"/>`;
+    /* lived portion */
+    svg+=`<rect x="${x0}" y="${y-7}" width="${Math.max(2,xn-x0)}" height="14" rx="7" fill="${col}" opacity=".85"/>`;
+    /* childhood window for kids (0->indep) */
+    if(pn.kind==='kid'){
+      const xi=x(addYears(pn.dob,pn.indepAge).getTime());
+      svg+=`<rect x="${x0}" y="${y-9}" width="${Math.max(2,xi-x0)}" height="18" rx="9" fill="none" stroke="${col}" stroke-width="1.4" opacity=".5"/>`;
+    }
+    /* name */
+    svg+=`<text x="14" y="${y+4}" fill="var(--txt)" font-size="14" font-weight="700">${escapeHtml(trim(pn.name,12))}</text>`;
+    /* age at milestone */
+    const ageMile=Math.floor(ageAt(pn.dob,milestone));
+    svg+=`<text x="${W-10}" y="${y+4}" fill="var(--muted)" font-size="12.5" text-anchor="end">→ ${ageMile}</text>`;
+  });
+  svg+='</svg>';
+  $('timeline').innerHTML=svg;
+}
+
+/* ---------- presence check-in (compounding streak) ---------- */
+const PRESENCE=[
+  {id:'phone',e:'📵',t:'Phone down for them'},
+  {id:'play',e:'🧩',t:'Played / fully there'},
+  {id:'story',e:'📖',t:'Bedtime story / tuck-in'},
+  {id:'meal',e:'🍽️',t:'Shared a meal'},
+  {id:'outside',e:'🌳',t:'Outside together'},
+  {id:'talk',e:'💬',t:'Real conversation'},
+  {id:'yes',e:'✨',t:'Said yes to "one more"'},
+  {id:'love',e:'❤️',t:'Told them I love them'}
+];
+const GOOD_THRESH=0.5;
+function plog(){return get(K.presence,{});}
+function presentCount(){const L=plog();let c=0;for(const k in L)if(L[k].frac>=GOOD_THRESH)c++;return c;}
+function loggedCount(){return Object.keys(plog()).length;}
+function currentStreak(){
+  const L=plog();let streak=0;const d=new Date();
+  for(let i=0;i<400;i++){
+    const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    const e=L[key];
+    if(e){if(e.frac>=GOOD_THRESH)streak++;else break;}
+    else if(i>0)break;
+    d.setDate(d.getDate()-1);
+  }
+  return streak;
+}
+let todayPicks={};
+function loadTodayPicks(){const e=plog()[todayKey()];todayPicks={};PRESENCE.forEach(h=>todayPicks[h.id]=e&&e.picks?!!e.picks[h.id]:false);}
+function renderHabits(){
+  const logged=!!plog()[todayKey()];
+  $('habits').innerHTML=PRESENCE.map(h=>`
+    <div class="habit ${todayPicks[h.id]?'on':''}" data-h="${h.id}">
+      <span class="e">${h.e}</span><span class="ht">${h.t}</span>
+      <span class="box">${todayPicks[h.id]?'✓':''}</span></div>`).join('');
+  $('habits').querySelectorAll('.habit').forEach(el=>el.onclick=()=>{
+    const id=el.dataset.h;todayPicks[id]=!todayPicks[id];renderHabits();
+  });
+  $('logDay').textContent=logged?'Update today':'Log today';
+  const frac=PRESENCE.filter(h=>todayPicks[h.id]).length/PRESENCE.length;
+  $('dayPreview').innerHTML=frac>=GOOD_THRESH?'A present day — the chain holds. 🔥':(frac>0?'A few moments counted. Worth logging honestly.':'Tick what was true today.');
+}
+$('logDay').onclick=()=>{
+  const frac=PRESENCE.filter(h=>todayPicks[h.id]).length/PRESENCE.length;
+  const picks={};PRESENCE.forEach(h=>picks[h.id]=!!todayPicks[h.id]);
+  const L=plog();L[todayKey()]={frac,picks};set(K.presence,L);
+  render();
+  const st=currentStreak();
+  if(frac>=GOOD_THRESH)toast(`Logged. A present day — streak now 🔥${st}.`);
+  else toast('Logged honestly. Tomorrow is a clean slate.');
+};
+function renderHistory(){
+  const L=plog();const wrap=$('history');wrap.innerHTML='';
+  const d=new Date();d.setDate(d.getDate()-29);
+  for(let i=0;i<30;i++){
+    const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    const e=L[key];let cls='';
+    if(e)cls=e.frac>=GOOD_THRESH?'good':'mid';
+    const div=document.createElement('div');div.className='dot '+cls;
+    div.title=key+(e?` · ${Math.round(e.frac*100)}% present`:' · not logged');
+    wrap.appendChild(div);d.setDate(d.getDate()+1);
+  }
+}
+function renderStats(){
+  $('sStreak').textContent=currentStreak();
+  $('sPresent').textContent=presentCount();
+  $('sLogged').textContent=loggedCount();
+}
+function renderMotiv(){
+  const streak=currentStreak();const yk=youngestKid();
+  const sat=yk?kidStats(yk).satLeft:0;
+  let msg;
+  if(streak>=14)msg=`🔥 <b>${streak} present days in a row.</b> This is just who you are now. The Saturdays are still ticking down — but you're spending them awake.`;
+  else if(streak>=4)msg=`🔥 <b>${streak}-day streak.</b> The chain is the whole game. Don't break it tonight.`;
+  else if(loggedCount()>0)msg=`Every logged day is one you chose to notice. ${sat?`<b>${sat.toLocaleString()}</b> Saturdays left — `:''}start a new streak today.`;
+  else msg=`The first present day is the hardest and the most important. What can you honestly tick off tonight?`;
+  $('motiv').innerHTML=msg;
+}
+
+/* ---------- the reveal (shareable image) ---------- */
+function buildRevealKidSelect(){
+  const sel=$('revealKid');const ks=kids().filter(k=>!kidStats(k).grown);
+  sel.innerHTML=ks.map(k=>`<option value="${k.id}">${escapeHtml(k.name)}</option>`).join('');
+}
+function drawReveal(){
+  const c=$('revealCanvas');const ctx=c.getContext('2d');const W=1080,H=1080;
+  const sel=$('revealKid');const unit=$('revealUnit').value;
+  const k=kids().find(x=>x.id===sel.value)||kids()[0];
+  if(!k){return;}
+  const s=kidStats(k);
+  let n=s.satLeft,word='Saturdays';
+  if(unit==='sum'){n=s.sumLeft;word='Summers';}
+  if(unit==='bed'){n=s.bedLeft;word='Bedtimes';}
+  /* bg */
+  const g=ctx.createLinearGradient(0,0,W,H);
+  g.addColorStop(0,'#3a2719');g.addColorStop(.55,'#241813');g.addColorStop(1,'#17110d');
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  /* warm glow */
+  const rg=ctx.createRadialGradient(W*0.5,H*0.34,40,W*0.5,H*0.34,560);
+  rg.addColorStop(0,'rgba(245,177,76,0.20)');rg.addColorStop(1,'rgba(245,177,76,0)');
+  ctx.fillStyle=rg;ctx.fillRect(0,0,W,H);
+  ctx.textAlign='center';
+  /* eyebrow */
+  ctx.fillStyle='#b29a83';ctx.font='600 30px -apple-system,Segoe UI,Roboto,Arial';
+  ctx.fillText('SATURDAYS LEFT WITH'.replace('SATURDAYS',word.toUpperCase()),W/2,250);
+  /* name */
+  ctx.fillStyle='#f6ece0';ctx.font='800 64px -apple-system,Segoe UI,Roboto,Arial';
+  ctx.fillText(k.name,W/2,326);
+  /* big number with gradient */
+  const ng=ctx.createLinearGradient(W*0.2,0,W*0.8,0);
+  ng.addColorStop(0,'#f5b14c');ng.addColorStop(1,'#ff9e7d');
+  ctx.fillStyle=ng;
+  const num=n.toLocaleString();
+  let fs=Math.min(360,Math.floor(900/Math.max(2,num.length))*1.7);
+  ctx.font=`800 ${fs}px -apple-system,Segoe UI,Roboto,Arial`;
+  ctx.fillText(num,W/2,640);
+  /* word */
+  ctx.fillStyle='#f6ece0';ctx.font='700 56px -apple-system,Segoe UI,Roboto,Arial';
+  ctx.fillText(word.toLowerCase()+' left',W/2,732);
+  /* sub */
+  ctx.fillStyle='#b29a83';ctx.font='400 30px -apple-system,Segoe UI,Roboto,Arial';
+  ctx.fillText(`before ${k.name} turns ${k.indepAge}`,W/2,792);
+  /* footer brand */
+  ctx.fillStyle='#f5b14c';ctx.font='700 30px -apple-system,Segoe UI,Roboto,Arial';
+  ctx.fillText('Saturdays',W/2,940);
+  ctx.fillStyle='#8a7560';ctx.font='400 26px -apple-system,Segoe UI,Roboto,Arial';
+  ctx.fillText('the childhood you can’t get back, made visible',W/2,982);
+}
+$('downloadReveal').onclick=()=>{
+  const k=kids().find(x=>x.id===$('revealKid').value)||kids()[0];
+  const a=document.createElement('a');
+  a.download=`saturdays-${(k?k.name:'reveal').toLowerCase().replace(/\s+/g,'-')}.png`;
+  a.href=$('revealCanvas').toDataURL('image/png');a.click();
+  toast('Saved. Set it where you’ll see it. 🌅');
+};
+$('revealKid').onchange=drawReveal;
+$('revealUnit').onchange=drawReveal;
+
+/* ---------- edit people ---------- */
+$('editPeople')&&($('editPeople').onclick=()=>showSetup());
+
+/* ---------- helpers ---------- */
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function escapeAttr(s){return escapeHtml(s);}
+function trim(s,n){return s.length>n?s.slice(0,n-1)+'…':s;}
+let toastT=null;
+function toast(msg){const t=$('toast');t.innerHTML=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),3200);}
+$('startBtn').onclick=showSetup;
+$('resetAll').onclick=e=>{e.preventDefault();if(confirm('Reset Saturdays and erase everyone you added + all logged days? This cannot be undone.')){localStorage.removeItem(K.profile);localStorage.removeItem(K.presence);location.reload();}};
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)render();});
+
+/* ---------- main render ---------- */
+function render(){
+  if(!profile()||!kids().length){$('main').classList.add('hidden');$('setup').classList.add('hidden');$('empty').classList.remove('hidden');return;}
+  $('empty').classList.add('hidden');$('setup').classList.add('hidden');$('main').classList.remove('hidden');
+  loadTodayPicks();
+  renderKidCards();renderTimeline();
+  renderHabits();renderHistory();renderStats();renderMotiv();
+  buildRevealKidSelect();drawReveal();
+  if(tickTimer)clearInterval(tickTimer);
+  tickTimer=setInterval(tickKidCards,1000);
+}
+render();
+</script>
+</body>
+</html>

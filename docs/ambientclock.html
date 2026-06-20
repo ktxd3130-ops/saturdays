@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ambient Life Clock</title>
+<!--
+  ============================================================
+  AMBIENT LIFE CLOCK  ·  for an always-on screen (tablet or Raspberry Pi)
+  ============================================================
+  This is a calm, glanceable, full-screen display — NOT the full app.
+  Purpose: see your time (and your kids' childhood) tick down, 24/7.
+
+  >>> EDIT THE CONFIG BLOCK BELOW, then open this file full-screen. <<<
+  Nothing is sent anywhere. Everything runs locally in the browser.
+-->
+<style>
+  :root{--grad:linear-gradient(120deg,#34d399,#22d3ee);}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;overflow:hidden;cursor:none}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:radial-gradient(1200px 800px at 50% 30%,#0e2233 0%,#091017 60%,#05080d 100%);
+    color:#e9f1f7;display:grid;place-items:center;height:100vh;text-align:center;
+    -webkit-font-smoothing:antialiased;transition:opacity 1.2s ease;
+  }
+  .stage{padding:4vmin;width:100%;max-width:1100px}
+  .label{font-size:2.1vmin;letter-spacing:.5vmin;text-transform:uppercase;color:#6f8aa3;
+    display:inline-flex;align-items:center;gap:1.4vmin}
+  .dot{width:1.3vmin;height:1.3vmin;border-radius:50%;background:#34d399;
+    box-shadow:0 0 0 0 rgba(52,211,153,.5);animation:pulse 1.7s ease-out infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(52,211,153,.55)}70%{box-shadow:0 0 0 1.6vmin rgba(52,211,153,0)}100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}}
+  .clock{display:flex;gap:2.2vmin;justify-content:center;flex-wrap:wrap;margin:3vmin 0 2vmin}
+  .unit{min-width:15vmin}
+  .unit .n{font-size:11vmin;font-weight:800;line-height:1;letter-spacing:-.4vmin;
+    font-variant-numeric:tabular-nums;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .unit .u{font-size:1.8vmin;letter-spacing:.4vmin;text-transform:uppercase;color:#6f8aa3;margin-top:1vmin}
+  .unit .sep{display:none}
+  .sub{font-size:2.4vmin;color:#9fb3c8;min-height:3.2vmin;transition:opacity .6s ease}
+  .sub b{color:#e9f1f7;font-weight:700}
+  .name{font-size:2vmin;color:#6f8aa3;margin-bottom:1vmin}
+  @media (orientation:portrait){.unit .n{font-size:14vmin}.unit{min-width:30vmin}}
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="name" id="hello"></div>
+    <div class="label"><span class="dot"></span><span>Time remaining</span></div>
+    <div class="clock" id="clock"></div>
+    <div class="sub" id="sub"></div>
+  </div>
+
+<script>
+/* ================== EDIT THIS ================== */
+const CONFIG = {
+  name: "",                      // your first name (optional), e.g. "Sam"
+  birthdate: "1990-01-01",       // YOUR date of birth  (YYYY-MM-DD)
+  sex: "male",                   // "male" | "female" | "other"  (sets baseline life expectancy)
+  lifeExpectancy: null,          // optional: override total years (e.g. 83). null = use baseline by sex.
+
+  kids: [
+    // Add your kids here. Delete the example if you have none.
+    { name: "Maya", birthdate: "2019-05-02", independenceAge: 18 }
+    // , { name: "Leo", birthdate: "2022-11-20", independenceAge: 18 }
+  ],
+
+  // Auto-dim the screen at night (24h clock). Set nightDim:null to disable.
+  nightDim: { start: 21, end: 7, opacity: 0.4 }
+};
+/* =============================================== */
+
+const BASE = { male: 76, female: 81, other: 78 };
+
+function parseDate(s){ return new Date(s + "T00:00:00"); }
+function deathDate(){
+  const dob = parseDate(CONFIG.birthdate);
+  const le = CONFIG.lifeExpectancy || BASE[CONFIG.sex] || 78;
+  const d = new Date(dob);
+  const whole = Math.floor(le);
+  d.setFullYear(d.getFullYear() + whole);
+  d.setDate(d.getDate() + Math.round((le - whole) * 365.25));
+  return d;
+}
+
+function renderClock(){
+  const now = new Date();
+  let ms = deathDate() - now;
+  const el = document.getElementById('clock');
+  if (ms <= 0){
+    el.innerHTML = '<div class="unit"><div class="n">∞</div><div class="u">bonus time</div></div>';
+    return;
+  }
+  let sec = Math.floor(ms/1000);
+  const years = Math.floor(sec/(365.25*86400)); sec -= Math.floor(years*365.25*86400);
+  const days  = Math.floor(sec/86400);          sec -= days*86400;
+  const h = Math.floor(sec/3600);                sec -= h*3600;
+  const m = Math.floor(sec/60);                  sec -= m*60;
+  const s = sec;
+  const U = [[years,'years'],[days,'days'],[h,'hours'],[m,'min'],[s,'sec']];
+  el.innerHTML = U.map(u=>`<div class="unit"><div class="n">${u[0]}</div><div class="u">${u[1]}</div></div>`).join('');
+}
+
+/* rotating reflection line: kids' childhood + gentle presence nudges */
+function buildLines(){
+  const now = new Date();
+  const lines = [];
+  (CONFIG.kids||[]).forEach(k=>{
+    const eighteenth = parseDate(k.birthdate);
+    eighteenth.setFullYear(eighteenth.getFullYear() + (k.independenceAge||18));
+    const ms = eighteenth - now;
+    if (ms <= 0) return;
+    const saturdays = Math.floor(ms/(7*86400000));
+    const summers   = Math.floor(ms/(365.25*86400000));
+    const bedtimes  = Math.floor(ms/86400000);
+    lines.push(`<b>${saturdays.toLocaleString()}</b> Saturdays left with ${k.name}`);
+    lines.push(`<b>${summers}</b> more summers with ${k.name}`);
+    lines.push(`<b>${bedtimes.toLocaleString()}</b> bedtimes left until ${k.name} is grown`);
+  });
+  lines.push("Be here now.");
+  lines.push("This moment is the one you have.");
+  lines.push("Put the phone down. Look up.");
+  return lines;
+}
+let LINES = buildLines();
+let li = 0;
+function rotateSub(){
+  const sub = document.getElementById('sub');
+  sub.style.opacity = 0;
+  setTimeout(()=>{ sub.innerHTML = LINES[li % LINES.length]; li++; sub.style.opacity = 1; }, 600);
+}
+
+function applyDim(){
+  if (!CONFIG.nightDim){ document.body.style.opacity = 1; return; }
+  const h = new Date().getHours();
+  const {start, end, opacity} = CONFIG.nightDim;
+  const night = start > end ? (h >= start || h < end) : (h >= start && h < end);
+  document.body.style.opacity = night ? opacity : 1;
+}
+
+if (CONFIG.name) document.getElementById('hello').textContent = CONFIG.name + "'s life";
+renderClock(); rotateSub(); applyDim();
+LINES = buildLines();
+setInterval(renderClock, 1000);
+setInterval(rotateSub, 8000);
+setInterval(applyDim, 60000);
+setInterval(()=>{ LINES = buildLines(); }, 3600000); // refresh kid counts hourly
+</script>
+</body>
+</html>
