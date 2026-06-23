@@ -147,8 +147,8 @@
   .toggle.on .mid .d{color:var(--accent);}
   .sw{width:50px;height:30px;border-radius:16px;background:var(--line);position:relative;flex:none;transition:background .2s;}
   .sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .2s cubic-bezier(.3,.8,.4,1);}
-  .toggle.on .sw{background:var(--accent);}
-  .toggle.on .sw::after{transform:translateX(20px);}
+  .toggle.on .sw,.toggle-card.on .sw{background:var(--accent);}
+  .toggle.on .sw::after,.toggle-card.on .sw::after{transform:translateX(20px);}
   .health-foot{
     position:sticky;bottom:90px;margin:18px 0 0;text-align:center;
     background:var(--card-hi);border:1px solid var(--line);border-radius:var(--r);padding:15px;
