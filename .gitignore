@@ -5,3 +5,6 @@ node_modules
 
 # Capacitor web-root build artifact (regenerated from index.html by `npm run copy:www`)
 www
+
+# Xcode CLI build output (xcodebuild -derivedDataPath build)
+build
