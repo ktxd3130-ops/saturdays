@@ -331,31 +331,272 @@
   .more-grid button svg{width:24px;height:24px;color:var(--accent);}
   .more-grid button .mt{font-size:16px;font-weight:600;}
   .more-grid button .md{font-size:12px;color:var(--ink-dim);line-height:1.35;}
+
+  /* ---------- Multi-step onboarding ---------- */
+  #onboard{justify-content:flex-start;overflow-y:auto;padding-top:calc(28px + var(--safe-top));}
+  .ob-progress{display:flex;gap:6px;margin-bottom:28px;}
+  .ob-progress i{flex:1;height:4px;border-radius:3px;background:var(--line);transition:background .35s;}
+  .ob-progress i.on{background:var(--accent);}
+  .ob-step{display:none;}
+  .ob-step.active{display:block;animation:fade .35s ease;}
+  .ob-step h2{font-size:clamp(27px,7.4vw,36px);font-weight:700;letter-spacing:-.025em;line-height:1.08;margin:0 0 8px;}
+  .ob-step-sub{color:var(--ink-dim);font-size:15px;line-height:1.45;margin:0 0 26px;max-width:36ch;}
+  .ob-label{display:block;font-size:13.5px;color:var(--ink-dim);margin:0 0 9px;letter-spacing:.01em;}
+  .ob-label .sv{float:right;color:var(--accent);font-weight:700;font-variant-numeric:tabular-nums;}
+  .ob-block{margin-bottom:22px;}
+  .ob-row{display:flex;gap:12px;}
+  .ob-row .field,.ob-row .ob-block{flex:1;margin-bottom:0;}
+  .ob-cond{display:none;margin-top:14px;}
+  .ob-cond.show{display:block;animation:fade .3s ease;}
+  .ob-nav{display:flex;gap:11px;margin-top:30px;margin-bottom:10px;}
+  .ob-back{flex:0 0 auto;padding:17px 22px;border-radius:14px;background:var(--card);border:1px solid var(--line);color:var(--ink-dim);font-size:16px;font-weight:600;transition:.15s;}
+  .ob-back:active{background:var(--card-hi);}
+  .ob-next{flex:1;margin-top:0;}
+  input[type=range].big{width:100%;-webkit-appearance:none;appearance:none;height:8px;border-radius:6px;background:var(--line);outline:none;margin:4px 0 2px;}
+  input[type=range].big::-webkit-slider-thumb{-webkit-appearance:none;width:30px;height:30px;border-radius:50%;background:var(--accent);border:4px solid var(--bg);box-shadow:0 2px 10px rgba(0,0,0,.5);cursor:pointer;}
+  .range-ends{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink-faint);margin-top:2px;}
+
+  /* ---------- The reveal ---------- */
+  #ob-reveal.ob-step.active{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:74vh;}
+  .reveal-kicker{color:var(--accent);font-size:13px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;opacity:0;transition:opacity 1s ease;}
+  .reveal-pre{color:var(--ink-dim);font-size:18px;font-weight:500;margin-top:24px;opacity:0;transition:opacity 1s ease .3s;}
+  .reveal-num{
+    font-size:clamp(78px,26vw,140px);font-weight:800;line-height:.9;letter-spacing:-.04em;margin:6px 0 2px;
+    background:linear-gradient(165deg,#fff 0%,var(--accent) 115%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;font-variant-numeric:tabular-nums;
+    opacity:0;transform:scale(.82);transition:opacity 1.1s ease .55s,transform 1.3s cubic-bezier(.18,.85,.25,1) .55s;
+  }
+  .reveal-word{color:var(--accent);font-size:21px;font-weight:600;opacity:0;transition:opacity 1s ease 1s;}
+  .reveal-sub{color:var(--ink-dim);font-size:14.5px;line-height:1.5;margin-top:26px;max-width:32ch;opacity:0;transition:opacity 1s ease 1.5s;}
+  .reveal-sub b{color:var(--ink);}
+  #ob-reveal.show .reveal-kicker,#ob-reveal.show .reveal-pre,#ob-reveal.show .reveal-num,
+  #ob-reveal.show .reveal-word,#ob-reveal.show .reveal-sub{opacity:1;}
+  #ob-reveal.show .reveal-num{transform:none;}
+  .reveal-go{width:100%;margin-top:38px;opacity:0;transition:opacity .8s ease 2.1s;}
+  #ob-reveal.show .reveal-go{opacity:1;}
+
+  /* ---------- Daily logger ---------- */
+  .log-impact{
+    background:var(--card-hi);border:1px solid var(--line);border-radius:var(--r);
+    padding:20px 18px;margin-bottom:8px;box-shadow:var(--shadow);text-align:center;
+  }
+  .log-impact .li-big{font-size:clamp(30px,9vw,40px);font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1;}
+  .log-impact .li-big.pos{color:var(--good);} .log-impact .li-big.neg{color:var(--bad);}
+  .log-impact .li-sub{font-size:14px;color:var(--ink-dim);margin-top:8px;line-height:1.4;}
+  .log-impact .li-sub b{color:var(--ink);}
+  .log-mini{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin:14px 0 2px;}
+  .log-mini .lm{background:var(--card);border:1px solid var(--line-soft);border-radius:14px;padding:12px 8px;}
+  .log-mini .lm .v{font-size:19px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;}
+  .log-mini .lm .l{font-size:10.5px;color:var(--ink-dim);margin-top:2px;}
+
+  .log-card{background:var(--card);border:1px solid var(--line-soft);border-radius:var(--r);padding:16px 16px;margin-bottom:11px;}
+  .log-card .lq{font-size:15.5px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:9px;}
+  .log-card .lq .le{font-size:19px;}
+  .log-card.toggle-card{flex-direction:row;display:flex;align-items:center;gap:14px;cursor:pointer;}
+  .log-card.toggle-card .lq{margin-bottom:0;flex:1;}
+  .today-impact{
+    position:sticky;bottom:78px;z-index:10;margin:8px 0 2px;
+    background:rgba(20,20,22,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border:1px solid var(--line);border-radius:16px;padding:13px 16px;display:flex;align-items:center;gap:14px;
+    box-shadow:var(--shadow);
+  }
+  .today-impact .ti-num{font-size:21px;font-weight:800;font-variant-numeric:tabular-nums;flex:none;}
+  .today-impact .ti-num.pos{color:var(--good);} .today-impact .ti-num.neg{color:var(--bad);} .today-impact .ti-num.zero{color:var(--ink-dim);}
+  .today-impact .ti-mid{flex:1;min-width:0;font-size:12.5px;color:var(--ink-dim);line-height:1.3;}
+  .today-impact .ti-save{flex:none;padding:12px 18px;border-radius:12px;background:var(--accent);color:#1a1206;font-size:14.5px;font-weight:700;}
+  .today-impact .ti-save.saved{background:var(--card);border:1px solid var(--line);color:var(--good);}
+  .mood-pick{display:flex;gap:8px;}
+  .mood-pick button{flex:1;aspect-ratio:1;border-radius:13px;background:var(--bg-soft);border:1px solid var(--line);font-size:24px;display:flex;align-items:center;justify-content:center;transition:.15s;}
+  .mood-pick button.on{border-color:var(--accent);background:var(--card-hi);transform:scale(1.06);}
+  .log-chart{background:var(--card);border:1px solid var(--line-soft);border-radius:var(--r);padding:16px 14px 12px;margin-bottom:11px;}
+  .log-chart .lh{font-size:12.5px;color:var(--ink-dim);margin-bottom:10px;}
+  .log-chart svg{width:100%;display:block;}
+  .log-extremes{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:11px;}
+  .log-extremes .lx{background:var(--card);border:1px solid var(--line-soft);border-radius:var(--r);padding:14px 15px;}
+  .log-extremes .lx .lxl{font-size:11.5px;color:var(--ink-dim);}
+  .log-extremes .lx .lxv{font-size:16px;font-weight:700;margin-top:3px;}
+  .log-extremes .lx .lxv.pos{color:var(--good);} .log-extremes .lx .lxv.neg{color:var(--bad);}
+  .log-extremes .lx .lxd{font-size:11.5px;color:var(--ink-faint);margin-top:2px;}
+
+  /* clock compound line */
+  .hero-compound{font-size:15px;font-weight:600;margin-top:10px;min-height:20px;}
+  .hero-compound.pos{color:var(--good);} .hero-compound.neg{color:var(--bad);} .hero-compound.zero{color:var(--ink-faint);}
 </style>
 </head>
 <body>
 <div class="app">
 
-  <!-- ====== ONBOARDING ====== -->
+  <!-- ====== ONBOARDING (5-step health intake) ====== -->
   <div id="onboard">
-    <div class="ob-kicker">Memento Mori</div>
-    <h1 class="ob-title">How many Saturdays<br>do you have left?</h1>
-    <p class="ob-sub">A life is roughly four thousand Saturdays. Let's find out where you are.</p>
-
-    <div class="field">
-      <label>When were you born?</label>
-      <input type="date" id="ob-bday" max="2025-12-31" min="1920-01-01">
+    <div class="ob-progress" id="obProgress">
+      <i class="on"></i><i></i><i></i><i></i><i></i>
     </div>
-    <div class="field">
-      <label>Sex (for life-expectancy estimate)</label>
-      <div class="seg" id="ob-sex">
-        <button data-v="male">Male</button>
-        <button data-v="female">Female</button>
-        <button data-v="other">Average</button>
+
+    <!-- STEP 1 — Basics -->
+    <div class="ob-step active" id="ob-s1" data-step="1">
+      <div class="ob-kicker">Step 1 of 4 · Basics</div>
+      <h2>Let's start with you.</h2>
+      <p class="ob-step-sub">Your age and sex set the baseline from U.S. actuarial life tables.</p>
+      <div class="field">
+        <label>When were you born?</label>
+        <input type="date" id="ob-bday" max="2025-12-31" min="1920-01-01">
+      </div>
+      <div class="field">
+        <label>Sex (for life-expectancy estimate)</label>
+        <div class="seg" id="ob-sex">
+          <button data-v="male">Male</button>
+          <button data-v="female">Female</button>
+          <button data-v="other">Average</button>
+        </div>
+      </div>
+      <div class="ob-nav">
+        <button class="btn-primary ob-next" data-next="2" disabled>Continue</button>
       </div>
     </div>
-    <button class="btn-primary" id="ob-go" disabled>See my Saturdays</button>
-    <p class="ob-fine">Everything stays on your device. Estimates use U.S. actuarial life tables — they are a mirror, not a prophecy.</p>
+
+    <!-- STEP 2 — Body -->
+    <div class="ob-step" id="ob-s2" data-step="2">
+      <div class="ob-kicker">Step 2 of 4 · Body</div>
+      <h2>Your body.</h2>
+      <p class="ob-step-sub">Height and weight give us your BMI. Movement is one of the biggest levers you have.</p>
+      <div class="ob-row">
+        <div class="ob-block">
+          <label class="ob-label">Height</label>
+          <div class="ob-row">
+            <div class="field" style="margin:0">
+              <select id="ob-ht-ft"><option value="">ft</option></select>
+            </div>
+            <div class="field" style="margin:0">
+              <select id="ob-ht-in"><option value="">in</option></select>
+            </div>
+          </div>
+        </div>
+        <div class="ob-block">
+          <label class="ob-label">Weight (lbs)</label>
+          <input type="number" id="ob-wt" inputmode="numeric" placeholder="160" min="60" max="600">
+        </div>
+      </div>
+      <div class="ob-block" style="margin-top:22px">
+        <label class="ob-label">How often do you exercise?</label>
+        <div class="seg seg-wrap" id="ob-exercise">
+          <button data-v="never">Never</button>
+          <button data-v="light">1–2× / week</button>
+          <button data-v="moderate">3–4× / week</button>
+          <button data-v="daily">Daily</button>
+        </div>
+      </div>
+      <div class="ob-nav">
+        <button class="ob-back" data-back="1">Back</button>
+        <button class="btn-primary ob-next" data-next="3">Continue</button>
+      </div>
+    </div>
+
+    <!-- STEP 3 — Habits -->
+    <div class="ob-step" id="ob-s3" data-step="3">
+      <div class="ob-kicker">Step 3 of 4 · Habits</div>
+      <h2>Daily habits.</h2>
+      <p class="ob-step-sub">Be honest — this is just for you, and it never leaves your device.</p>
+
+      <div class="ob-block">
+        <label class="ob-label">Do you smoke?</label>
+        <div class="seg seg-wrap" id="ob-smoke">
+          <button data-v="none">None</button>
+          <button data-v="cigarettes">Cigarettes</button>
+          <button data-v="cannabis">Cannabis</button>
+          <button data-v="both">Both</button>
+        </div>
+        <div class="ob-cond" id="ob-cigs-wrap">
+          <label class="ob-label" style="margin-top:14px">Cigarettes per day <span class="sv" id="ob-cigs-v">10</span></label>
+          <input type="range" class="big" id="ob-cigs" min="1" max="40" step="1" value="10">
+          <div class="range-ends"><span>1</span><span>1 pack</span><span>40</span></div>
+        </div>
+        <div class="ob-cond" id="ob-canfreq-wrap">
+          <label class="ob-label" style="margin-top:14px">How often cannabis?</label>
+          <div class="seg" id="ob-canfreq">
+            <button data-v="occasionally">Occasionally</button>
+            <button data-v="weekly">Weekly</button>
+            <button data-v="daily">Daily</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ob-block">
+        <label class="ob-label">Drinks per week <span class="sv" id="ob-drinks-v">3</span></label>
+        <input type="range" class="big" id="ob-drinks" min="0" max="30" step="1" value="3">
+        <div class="range-ends"><span>0</span><span>15</span><span>30+</span></div>
+      </div>
+
+      <div class="ob-block">
+        <label class="ob-label">Diet quality</label>
+        <div class="seg seg-wrap" id="ob-diet">
+          <button data-v="poor">Poor</button>
+          <button data-v="average">Average</button>
+          <button data-v="good">Good</button>
+          <button data-v="excellent">Excellent</button>
+        </div>
+      </div>
+
+      <div class="ob-block">
+        <label class="ob-label">Sleep per night <span class="sv" id="ob-sleep-v">7.5 hrs</span></label>
+        <input type="range" class="big" id="ob-sleep" min="4" max="10" step="0.5" value="7.5">
+        <div class="range-ends"><span>4</span><span>7</span><span>10</span></div>
+      </div>
+
+      <div class="ob-nav">
+        <button class="ob-back" data-back="2">Back</button>
+        <button class="btn-primary ob-next" data-next="4">Continue</button>
+      </div>
+    </div>
+
+    <!-- STEP 4 — History -->
+    <div class="ob-step" id="ob-s4" data-step="4">
+      <div class="ob-kicker">Step 4 of 4 · History</div>
+      <h2>Your history.</h2>
+      <p class="ob-step-sub">Genes and circumstance bend the curve too.</p>
+
+      <div class="ob-block">
+        <label class="ob-label">Did your parents or grandparents live past 85?</label>
+        <div class="seg" id="ob-longevity">
+          <button data-v="yes">Yes</button>
+          <button data-v="no">No / not sure</button>
+        </div>
+      </div>
+
+      <div class="ob-block">
+        <label class="ob-label">Any chronic conditions?</label>
+        <div class="seg seg-wrap" id="ob-chronic">
+          <button data-v="none">None</button>
+          <button data-v="managed">Managed</button>
+          <button data-v="serious">Serious</button>
+        </div>
+      </div>
+
+      <div class="ob-block">
+        <label class="ob-label">Mental health</label>
+        <div class="seg seg-wrap" id="ob-mental">
+          <button data-v="good">Generally good</button>
+          <button data-v="struggling">Struggling</button>
+          <button data-v="treatment">In treatment</button>
+        </div>
+      </div>
+
+      <div class="ob-nav">
+        <button class="ob-back" data-back="3">Back</button>
+        <button class="btn-primary ob-next" id="ob-finish">Reveal my Saturdays</button>
+      </div>
+    </div>
+
+    <!-- STEP 5 — THE REVEAL -->
+    <div class="ob-step" id="ob-reveal" data-step="5">
+      <div class="reveal-kicker">Memento Mori</div>
+      <div class="reveal-pre">You have</div>
+      <div class="reveal-num" id="revealNum">—</div>
+      <div class="reveal-word">Saturdays left</div>
+      <div class="reveal-sub" id="revealSub"></div>
+      <button class="btn-primary reveal-go" id="revealGo">Open my clock</button>
+    </div>
+
+    <p class="ob-fine">Everything stays on your device. Estimates use U.S. actuarial life tables — a mirror, not a prophecy.</p>
   </div>
 
   <!-- ====== TOPBAR ====== -->
@@ -372,6 +613,7 @@
       <div class="hero-label">You have</div>
       <div class="hero-num" id="heroNum">—</div>
       <div class="hero-word">Saturdays left &middot; <b id="heroAge">—</b></div>
+      <div class="hero-compound zero" id="heroCompound"></div>
     </div>
 
     <div class="gridwrap">
@@ -397,15 +639,28 @@
     <p class="crisis-note">A mirror, not a prophecy. If you're struggling, you're not alone — <a href="sms:988">text or call 988</a>.</p>
   </section>
 
-  <!-- ====== SCREEN: HEALTH ====== -->
-  <section class="screen" id="screen-health">
-    <div class="sec-h"><h2>Bend the curve</h2><p>Your choices move the number. Toggle what's true and watch your Saturdays shift.</p></div>
+  <!-- ====== SCREEN: DAILY LOG ====== -->
+  <section class="screen" id="screen-log">
+    <div class="sec-h"><h2>Today's log</h2><p>Thirty seconds. Every honest day nudges your Saturdays up or down — and it compounds.</p></div>
     <div class="sec-pad"></div>
-    <div id="healthList"></div>
-    <div class="health-foot">
-      <div class="big">You have <b id="hfNum">—</b> Saturdays</div>
-      <div class="sm" id="hfDelta">Baseline estimate</div>
+
+    <div class="log-impact" id="logImpact"></div>
+    <div class="log-mini" id="logMini"></div>
+
+    <div class="sec-h" style="margin-top:28px"><h2 style="font-size:21px" id="logFormTitle">How was today?</h2></div>
+    <div class="sec-pad" style="height:10px"></div>
+    <div id="logForm"></div>
+
+    <div class="today-impact" id="todayImpact">
+      <div class="ti-num zero" id="tiNum">+0.00</div>
+      <div class="ti-mid" id="tiMid">Saturdays from today's choices</div>
+      <button class="ti-save" id="tiSave">Log today</button>
     </div>
+
+    <div class="sec-h" style="margin-top:30px"><h2 style="font-size:21px">Your impact</h2><p>The last 30 days of choices, compounding.</p></div>
+    <div class="sec-pad" style="height:12px"></div>
+    <div class="log-chart" id="logChart"></div>
+    <div class="log-extremes" id="logExtremes"></div>
   </section>
 
   <!-- ====== SCREEN: PEOPLE ====== -->
@@ -479,14 +734,14 @@
     <button data-screen="clock" class="on">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round"/></svg>Clock
     </button>
+    <button data-screen="log">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 20v-6M12 4v3M6 14l-2 6M18 14l2 6" stroke-linecap="round" opacity="0"/><rect x="4" y="5" width="16" height="16" rx="3"/><path d="M8 3v4M16 3v4M4 10h16" stroke-linecap="round"/></svg>Log
+    </button>
     <button data-screen="people">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-7-9.5A4.5 4.5 0 0112 7a4.5 4.5 0 017 4.5C19 16.5 12 21 12 21z" stroke-linejoin="round"/></svg>Loved
     </button>
     <button data-screen="plan">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke-linecap="round" stroke-linejoin="round"/></svg>Plan
-    </button>
-    <button data-screen="presence">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>Presence
     </button>
     <button id="moreBtn">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.6" fill="currentColor" stroke="none"/></svg>More
@@ -539,9 +794,9 @@
     <div class="sheet">
       <h3>More</h3>
       <div class="more-grid">
-        <button data-screen="health">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l2 6 4-12 2 6h6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <div><div class="mt">Bend the curve</div><div class="md">Habits that move the number</div></div>
+        <button data-screen="presence">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div><div class="mt">Presence</div><div class="md">Was this Saturday intentional?</div></div>
         </button>
         <button data-screen="timedebt">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 1.5M9 2h6" stroke-linecap="round"/></svg>
@@ -620,17 +875,70 @@ function remainingYears(age, sex){
 }
 function expectedDeathAge(age, sex){ return age + remainingYears(age, sex); }
 
-/* ---------- Health modifiers (year deltas) ---------- */
-const HEALTH = [
-  {id:'exercise', emoji:'🏃', t:'Exercise regularly',     d:'Moves most days',             delta:+4},
-  {id:'diet',     emoji:'🥗', t:'Eat well',               d:'Whole foods, mostly plants',  delta:+3},
-  {id:'longevity',emoji:'🧬', t:'Longevity in the family',d:'Grandparents reached 90+',    delta:+5},
-  {id:'sleep',    emoji:'😴', t:'Sleep 7–8 hours',        d:'Consistent, restorative rest',delta:+2},
-  {id:'smoke',    emoji:'🚬', t:'Smoker',                 d:'Cigarettes regularly',        delta:-10},
-  {id:'drink',    emoji:'🍷', t:'Heavy drinker',          d:'Well past moderate',          delta:-5},
-  {id:'chronic',  emoji:'💊', t:'Chronic condition',      d:'Ongoing health issue',        delta:-5},
-  {id:'stress',   emoji:'🌪️', t:'Chronic high stress',    d:'Rarely able to switch off',   delta:-2},
-];
+/* ---------- Life-expectancy adjustment from the health profile ----------
+   Returns a YEAR delta applied on top of the actuarial base. Each lever is
+   additive and intentionally conservative; the sum becomes `bonusYears()`. */
+function profileAdjustmentYears(p){
+  if(!p) return 0;
+  let d = 0;
+  // BMI — needs height (inches) + weight (lbs): BMI = 703·lbs/in²
+  const inches = (p.heightFt||0)*12 + (p.heightIn||0);
+  if(inches>0 && p.weightLbs>0){
+    const bmi = 703 * p.weightLbs / (inches*inches);
+    if(bmi>=30) d -= 3; else if(bmi>=25) d -= 1; // 18.5–24.9 (and under) = +0
+  }
+  // Exercise
+  d += ({never:-3, light:+1, moderate:+3, daily:+4})[p.exercise] || 0;
+  // Smoking — cigarettes scale toward -10 at a pack/day (20); cannabis by freq
+  if(p.smoke==='cigarettes' || p.smoke==='both'){
+    const cigs = p.cigsPerDay || 10;
+    d += Math.max(-15, -10 * (cigs/20));
+  }
+  if(p.smoke==='cannabis' || p.smoke==='both'){
+    d += ({daily:-1, weekly:-0.3, occasionally:0})[p.cannabisFreq] || 0;
+  }
+  // Drinking (per week)
+  const dr = p.drinksPerWeek||0;
+  if(dr>=22) d -= 7; else if(dr>=15) d -= 3; else if(dr>=8) d -= 1; // 0–7 = +0
+  // Diet
+  d += ({poor:-3, average:0, good:+2, excellent:+3})[p.diet] || 0;
+  // Sleep (hours/night)
+  const sl = p.sleepHours||7.5;
+  if(sl<6) d -= 2; else if(sl<7) d -= 0.5; else if(sl<=9) d += 1; else d -= 1;
+  // Family longevity
+  if(p.familyLongevity==='yes') d += 4;
+  // Chronic conditions
+  d += ({managed:-2, serious:-5})[p.chronic] || 0;
+  // Mental health (treatment helps → neutral)
+  d += ({struggling:-1})[p.mental] || 0;
+  return d;
+}
+
+/* ---------- Daily activity logger: per-day Saturday impact ----------
+   Each logged day moves the Saturday count by a small fraction. They ACCUMULATE
+   into the running compound adjustment. (Mood is logged for the user's own
+   tracking but is intentionally not scored.) */
+function dayImpact(e){
+  if(!e) return 0;
+  let s = 0;
+  if(e.exercise) s += 0.08;
+  if(e.diet==='great' || e.diet==='good') s += 0.04;
+  else if(e.diet==='poor') s -= 0.04;
+  // drinks bucket: '0','1-2','3-4','5+'
+  s += ({'0':0.01, '1-2':0, '3-4':-0.03, '5+':-0.08})[e.drinks] || 0;
+  // cigarettes bucket: '0','1-5','6-10','10+'
+  s += ({'0':0, '1-5':-0.06, '6-10':-0.12, '10+':-0.18})[e.cigs] || 0;
+  if(e.cannabis) s -= 0.02;
+  const sl = e.sleep;
+  if(typeof sl==='number'){ if(sl>=7 && sl<=9) s += 0.02; else if(sl<6 || sl>9) s -= 0.02; }
+  s += ({low:0.01, medium:0, high:-0.02})[e.stress] || 0;
+  return s;
+}
+function compoundSaturdays(){
+  let s = 0;
+  for(const k in S.dailyLogs) s += dayImpact(S.dailyLogs[k]);
+  return s;
+}
 
 /* ---------- Storage adapter ----------
    Native (Capacitor): @capacitor/preferences — durable, UserDefaults-backed,
@@ -659,7 +967,8 @@ const KEY = 'saturdays_v2';
 /* ---------- State ---------- */
 let S = blank();
 function blank(){ return {
-  bday:null, sex:null, health:{}, people:[], checkins:{},
+  bday:null, sex:null, profile:null, dailyLogs:{},
+  health:{}, people:[], checkins:{},
   bucket:[], timedebt:null, rituals:null, ritualLog:{}
 }; }
 
@@ -674,6 +983,8 @@ const DEFAULT_RITUALS = [
 ];
 function normalize(s){
   s = s || blank();
+  s.profile   = s.profile   || null;
+  s.dailyLogs = s.dailyLogs || {};
   s.health    = s.health    || {};
   s.people    = s.people    || [];
   s.checkins  = s.checkins  || {};
@@ -715,12 +1026,14 @@ const WIDGET_KEY = 'saturdays_widget';
 function writeWidgetData(){
   if(!Store.isNative || !(S.bday && S.sex)) return;
   try{
-    const c = compute();
+    // Fold the compounding daily adjustment (in Saturdays) into the year-delta
+    // the widget recomputes from, so the home-screen number reflects logging too.
+    const adj = bonusYears() + compoundSaturdays()/52;
     Store.set(WIDGET_KEY, JSON.stringify({
-      saturdaysLeft: Math.round(c.left),
+      saturdaysLeft: Math.round(totalLeft()),
       birthday: S.bday,
       sex: S.sex,
-      adjustmentYears: bonusYears(),
+      adjustmentYears: adj,
       asOf: new Date().toISOString()
     }));
   }catch(e){ /* widget mirror is best-effort */ }
@@ -779,7 +1092,11 @@ function thisSaturday(){ return firstSaturday(new Date()); }
 function fmt(n){ return Math.round(n).toLocaleString('en-US'); }
 
 /* ---------- Core computation for the user ---------- */
-function bonusYears(){ let b=0; HEALTH.forEach(h=>{ if(S.health[h.id]) b+=h.delta; }); return b; }
+function bonusYears(){ return profileAdjustmentYears(S.profile); }
+/* Base Saturdays from the health profile, plus the compounding daily-log
+   adjustment. The clock hero shows the total; the difference is surfaced as
+   "+X from your daily choices". */
+function totalLeft(){ return Math.max(0, compute().left + compoundSaturdays()); }
 function compute(bonus=bonusYears()){
   const now   = new Date();
   const birth = new Date(S.bday+'T00:00:00');
@@ -801,18 +1118,110 @@ function compute(bonus=bonusYears()){
 /* ============================================================
    ONBOARDING
 ============================================================ */
-let obSex = null;
-$$('#ob-sex button').forEach(b=>b.onclick=()=>{
-  $$('#ob-sex button').forEach(x=>x.classList.remove('on'));
-  b.classList.add('on'); obSex=b.dataset.v; obCheck();
-});
-$('#ob-bday').oninput = obCheck;
-function obCheck(){ $('#ob-go').disabled = !($('#ob-bday').value && obSex); }
-$('#ob-go').onclick = ()=>{
-  S.bday = $('#ob-bday').value; S.sex = obSex; save();
-  $('#onboard').classList.add('hide');
-  bootApp();
+const obData = {
+  bday:null, sex:null,
+  heightFt:null, heightIn:0, weightLbs:null, exercise:null,
+  smoke:'none', cigsPerDay:10, cannabisFreq:'occasionally',
+  drinksPerWeek:3, diet:'average', sleepHours:7.5,
+  familyLongevity:'no', chronic:'none', mental:'good'
 };
+let obStep = 1;
+
+/* Populate the height dropdowns once (4–7 ft, 0–11 in) */
+(function fillHeight(){
+  const ft=$('#ob-ht-ft'), inch=$('#ob-ht-in');
+  for(let f=4; f<=7; f++){ const o=document.createElement('option'); o.value=f; o.textContent=f+"'"; ft.appendChild(o); }
+  for(let i=0; i<=11; i++){ const o=document.createElement('option'); o.value=i; o.textContent=i+'"'; inch.appendChild(o); }
+  ft.onchange = ()=>{ obData.heightFt = ft.value? +ft.value : null; obValidate(); };
+  inch.onchange = ()=>{ obData.heightIn = inch.value? +inch.value : 0; };
+})();
+
+/* Generic segmented-control binder */
+function obSeg(sel, key, cb){
+  $$(sel+' button').forEach(b=>b.onclick=()=>{
+    $$(sel+' button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); obData[key]=b.dataset.v; if(cb) cb(b.dataset.v); obValidate();
+  });
+}
+function obPreselect(sel, val){ $$(sel+' button').forEach(b=>b.classList.toggle('on', b.dataset.v===val)); }
+
+obSeg('#ob-sex','sex');
+obSeg('#ob-exercise','exercise');
+obSeg('#ob-smoke','smoke', v=>{
+  $('#ob-cigs-wrap').classList.toggle('show', v==='cigarettes'||v==='both');
+  $('#ob-canfreq-wrap').classList.toggle('show', v==='cannabis'||v==='both');
+});
+obSeg('#ob-canfreq','cannabisFreq');
+obSeg('#ob-diet','diet');
+obSeg('#ob-longevity','familyLongevity');
+obSeg('#ob-chronic','chronic');
+obSeg('#ob-mental','mental');
+/* defaults that should look pre-chosen */
+obPreselect('#ob-canfreq','occasionally');
+obPreselect('#ob-diet','average');
+obPreselect('#ob-longevity','no');
+obPreselect('#ob-chronic','none');
+obPreselect('#ob-mental','good');
+obPreselect('#ob-smoke','none');
+
+$('#ob-bday').oninput = ()=>{ obData.bday = $('#ob-bday').value || null; obValidate(); };
+$('#ob-wt').oninput  = ()=>{ obData.weightLbs = +$('#ob-wt').value || null; obValidate(); };
+
+/* Sliders with live value labels */
+$('#ob-cigs').oninput  = e=>{ obData.cigsPerDay = +e.target.value; $('#ob-cigs-v').textContent = e.target.value; };
+$('#ob-drinks').oninput= e=>{ obData.drinksPerWeek = +e.target.value; $('#ob-drinks-v').textContent = e.target.value==='30'?'30+':e.target.value; };
+$('#ob-sleep').oninput = e=>{ obData.sleepHours = +e.target.value; $('#ob-sleep-v').textContent = e.target.value+' hrs'; };
+
+function obValidate(){
+  const n1 = $('#ob-s1 .ob-next'); if(n1) n1.disabled = !(obData.bday && obData.sex);
+  const n2 = $('#ob-s2 .ob-next'); if(n2) n2.disabled = !(obData.heightFt && obData.weightLbs>0 && obData.exercise);
+}
+function obGoStep(n){
+  obStep = n;
+  $$('.ob-step').forEach(s=>s.classList.toggle('active', +s.dataset.step===n));
+  $$('#obProgress i').forEach((bar,idx)=>bar.classList.toggle('on', idx < n));
+  $('#onboard').scrollTop = 0; window.scrollTo(0,0);
+  obValidate();
+  if(n===5) doReveal();
+}
+$$('.ob-next[data-next]').forEach(b=>b.onclick=()=>{ if(!b.disabled) obGoStep(+b.dataset.next); });
+$$('.ob-back[data-back]').forEach(b=>b.onclick=()=>obGoStep(+b.dataset.back));
+$('#ob-finish').onclick = ()=>obGoStep(5);
+
+function buildProfile(){
+  return {
+    heightFt:obData.heightFt||0, heightIn:obData.heightIn||0, weightLbs:obData.weightLbs||0,
+    exercise:obData.exercise, smoke:obData.smoke, cigsPerDay:obData.cigsPerDay,
+    cannabisFreq:obData.cannabisFreq, drinksPerWeek:obData.drinksPerWeek,
+    diet:obData.diet, sleepHours:obData.sleepHours, familyLongevity:obData.familyLongevity,
+    chronic:obData.chronic, mental:obData.mental
+  };
+}
+function doReveal(){
+  // Commit so compute() reflects the profile during the reveal.
+  S.bday = obData.bday; S.sex = obData.sex; S.profile = buildProfile(); save();
+  const c = compute(), deathAge = Math.round(c.deathAge), adj = bonusYears();
+  const sub = $('#revealSub');
+  if(Math.abs(adj) < 0.6){
+    sub.innerHTML = `Based on your profile, an estimated <b>${deathAge} years</b> of life — right around the baseline. Now make them count.`;
+  } else {
+    sub.innerHTML = `We estimate you'll reach about <b>age ${deathAge}</b>. Your choices ${adj>0?'add':'cost'} roughly <b>${Math.abs(Math.round(adj))} years</b> versus the average.`;
+  }
+  const rk = $('#ob-reveal'); rk.classList.remove('show');
+  $('#revealNum').textContent = '0';
+  // Force reflow so the transition replays, then fade + count up.
+  void rk.offsetWidth;
+  requestAnimationFrame(()=>rk.classList.add('show'));
+  setTimeout(()=>animateReveal(c.left), 650);
+}
+function animateReveal(target){
+  const el = $('#revealNum'); if(document.hidden){ el.textContent = fmt(target); return; }
+  const dur=1600, start=performance.now();
+  function step(t){ const p=Math.min(1,(t-start)/dur), e=1-Math.pow(1-p,3);
+    el.textContent = fmt(target*e); if(p<1) requestAnimationFrame(step); else el.textContent = fmt(target); }
+  requestAnimationFrame(step);
+}
+$('#revealGo').onclick = ()=>{ $('#onboard').classList.add('hide'); bootApp(); showScreen('clock'); };
 
 /* ============================================================
    NAV
@@ -820,13 +1229,13 @@ $('#ob-go').onclick = ()=>{
 $$('#nav button[data-screen]').forEach(b=>b.onclick=()=>showScreen(b.dataset.screen));
 /* Screens reachable from the bottom bar directly; everything else lives behind
    the More menu and lights up the More tab while active. */
-const PRIMARY = ['clock','people','plan','presence'];
+const PRIMARY = ['clock','log','people','plan'];
 function showScreen(name){
   $$('.screen').forEach(s=>s.classList.toggle('active', s.id==='screen-'+name));
   $$('#nav button[data-screen]').forEach(b=>b.classList.toggle('on', b.dataset.screen===name));
   $('#moreBtn').classList.toggle('on', !PRIMARY.includes(name));
   if(name==='clock')    renderClock();
-  if(name==='health')   renderHealth();
+  if(name==='log')      renderLog();
   if(name==='people')   renderPeople();
   if(name==='plan')     renderPlan();
   if(name==='timedebt') renderTimeDebt();
@@ -858,7 +1267,18 @@ $('#ambientBtn').onclick = ()=>{
 ============================================================ */
 function renderClock(){
   const c = compute();
-  animateNumber($('#heroNum'), c.left);
+  const comp = compoundSaturdays();
+  const total = Math.max(0, c.left + comp);
+  animateNumber($('#heroNum'), total);
+  const hc = $('#heroCompound');
+  if(Math.abs(comp) < 0.05){
+    hc.className = 'hero-compound zero';
+    hc.textContent = Object.keys(S.dailyLogs).length ? 'Your daily choices are holding steady' : 'Log a day to start moving the number';
+  } else {
+    const up = comp > 0;
+    hc.className = 'hero-compound ' + (up?'pos':'neg');
+    hc.textContent = `Your daily choices have ${up?'added':'cost you'} ${Math.abs(comp).toFixed(1)} Saturdays`;
+  }
   $('#heroAge').textContent = 'age '+Math.floor(c.age)+' of ~'+Math.round(c.deathAge);
   $('#pctLived').textContent = c.pct.toFixed(1)+'%';
   $('#pctBar').style.width = '0';
@@ -937,55 +1357,197 @@ function drawGrid(){
 function getCSS(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
 
 /* ============================================================
-   SCREEN 2 — HEALTH
+   SCREEN — DAILY ACTIVITY LOG
+   The daily engagement loop. Each entry has a small Saturday impact; they
+   accumulate into the compound adjustment shown on the clock.
 ============================================================ */
-function renderHealth(){
-  const list=$('#healthList'); list.innerHTML='';
-  HEALTH.forEach(h=>{
-    const on = !!S.health[h.id];
-    const satDelta = Math.abs(marginalSaturdays(h.delta));
-    const sign = h.delta>0 ? '+' : '−';
-    const el=document.createElement('div');
-    el.className='toggle'+(on?' on':'');
-    el.innerHTML=`
-      <div class="emoji">${h.emoji}</div>
-      <div class="mid">
-        <div class="t">${h.t}</div>
-        <div class="d">${ on ? `${sign}${fmt(satDelta)} Saturdays` : h.d }</div>
-      </div>
-      <div class="sw"></div>`;
-    el.onclick=()=>{ S.health[h.id]=!S.health[h.id]; save(); renderHealth(); };
-    list.appendChild(el);
-  });
-  updateHealthFoot();
+function todayKey(){ return new Date().toISOString().slice(0,10); }
+function yesterdayKey(){ const d=new Date(); d.setDate(d.getDate()-1); return d.toISOString().slice(0,10); }
+function blankEntry(){ return { exercise:false, diet:'ok', drinks:'0', cigs:'0', cannabis:false, sleep:7.5, stress:'medium', mood:3 }; }
+
+/* The working draft for today — seeded from today's saved entry, else yesterday's
+   values (habits repeat), else blanks. Committed to S.dailyLogs on save. */
+let logDraft = null;
+function seedDraft(){
+  const tk = todayKey();
+  if(S.dailyLogs[tk]) return Object.assign(blankEntry(), S.dailyLogs[tk]);
+  const y = S.dailyLogs[yesterdayKey()];
+  if(y){ const d = Object.assign(blankEntry(), y); d.mood=3; return d; } // carry habits, reset mood
+  return blankEntry();
 }
-/* Marginal Saturdays a given year-delta is worth, at the current baseline */
-function marginalSaturdays(yearDelta){
-  const base = bonusYears();
-  return compute(base).left - compute(base - yearDelta).left;
+
+/* Form schema — segmented "pickers" keep it tappable and ~30 seconds. */
+const MOODS = ['😞','😕','😐','🙂','😄'];
+function renderLog(){
+  if(!logDraft) logDraft = seedDraft();
+  renderLogImpact();
+  renderLogForm();
+  renderTodayBar();
+  renderLogChart();
 }
-function updateHealthFoot(){
-  const c = compute(), baseline = compute(0);
-  animateNumberQuick($('#hfNum'), c.left);
-  const diff = c.left - baseline.left;
-  if(diff===0){ $('#hfDelta').textContent='Baseline estimate — no adjustments'; }
+
+function renderLogImpact(){
+  const comp = compoundSaturdays();
+  const days = Object.keys(S.dailyLogs).length;
+  const box = $('#logImpact');
+  const up = comp >= 0;
+  const cls = days ? (Math.abs(comp)<0.05 ? '' : (up?'pos':'neg')) : '';
+  let head;
+  if(!days) head = `<div class="li-big">+0.0</div><div class="li-sub">Log your first day to start compounding.</div>`;
   else {
-    const col = diff>0 ? 'var(--good)' : 'var(--bad)';
-    $('#hfDelta').innerHTML = `Your habits ${diff>0?'add':'cost'} <b style="color:${col}">${fmt(Math.abs(diff))}</b> Saturdays`;
+    const verb = up ? 'added' : 'cost you';
+    head = `<div class="li-big ${cls}">${up?'+':'−'}${Math.abs(comp).toFixed(1)}</div>
+            <div class="li-sub">Your daily choices have <b>${verb} ${Math.abs(comp).toFixed(1)} Saturdays</b> so far.</div>`;
   }
+  box.innerHTML = head;
+  // mini stats: streak, days logged, best day
+  const st = logStats();
+  $('#logMini').innerHTML = `
+    <div class="lm"><div class="v">${st.streak}</div><div class="l">day streak</div></div>
+    <div class="lm"><div class="v">${days}</div><div class="l">days logged</div></div>
+    <div class="lm"><div class="v">${st.best!=null?(st.best>=0?'+':'−')+Math.abs(st.best).toFixed(2):'—'}</div><div class="l">best day</div></div>`;
 }
-let hfTimer;
-function animateNumberQuick(el, target){
-  const from = parseInt(el.textContent.replace(/\D/g,''))||target;
-  if(document.hidden){ el.textContent = fmt(target); return; }
-  const dur=500, start=performance.now();
-  cancelAnimationFrame(hfTimer);
-  function step(t){
-    const p=Math.min(1,(t-start)/dur), e=1-Math.pow(1-p,3);
-    el.textContent = fmt(from+(target-from)*e);
-    if(p<1) hfTimer=requestAnimationFrame(step); else el.textContent = fmt(target);
-  }
-  hfTimer=requestAnimationFrame(step);
+
+/* A segmented row of choices; sets logDraft[key] and live-updates the today bar. */
+function segRow(key, opts, current){
+  return `<div class="seg seg-wrap" data-key="${key}">` + opts.map(o=>
+    `<button data-v="${o.v}" class="${String(current)===String(o.v)?'on':''}">${o.t}</button>`).join('') + `</div>`;
+}
+function renderLogForm(){
+  const d = logDraft;
+  const wrap = $('#logForm');
+  const logged = !!S.dailyLogs[todayKey()];
+  $('#logFormTitle').textContent = logged ? "Today — logged ✦" : "How was today?";
+  wrap.innerHTML = `
+    <div class="log-card toggle-card" id="lc-exercise">
+      <div class="lq"><span class="le">🏃</span>Did you exercise today?</div>
+      <div class="sw"></div>
+    </div>
+    <div class="log-card">
+      <div class="lq"><span class="le">🥗</span>How did you eat?</div>
+      ${segRow('diet',[{v:'poor',t:'Poor'},{v:'ok',t:'OK'},{v:'good',t:'Good'},{v:'great',t:'Great'}], d.diet)}
+    </div>
+    <div class="log-card">
+      <div class="lq"><span class="le">🍷</span>Drinks today</div>
+      ${segRow('drinks',[{v:'0',t:'0'},{v:'1-2',t:'1–2'},{v:'3-4',t:'3–4'},{v:'5+',t:'5+'}], d.drinks)}
+    </div>
+    <div class="log-card">
+      <div class="lq"><span class="le">🚬</span>Cigarettes today</div>
+      ${segRow('cigs',[{v:'0',t:'0'},{v:'1-5',t:'1–5'},{v:'6-10',t:'6–10'},{v:'10+',t:'10+'}], d.cigs)}
+    </div>
+    <div class="log-card toggle-card" id="lc-cannabis">
+      <div class="lq"><span class="le">🌿</span>Cannabis today?</div>
+      <div class="sw"></div>
+    </div>
+    <div class="log-card">
+      <div class="lq"><span class="le">😴</span>Hours of sleep <span class="sv" style="margin-left:auto;color:var(--accent);font-weight:700">${d.sleep} hrs</span></div>
+      <input type="range" class="big" id="lc-sleep" min="4" max="10" step="0.5" value="${d.sleep}">
+      <div class="range-ends"><span>4</span><span>7</span><span>10</span></div>
+    </div>
+    <div class="log-card">
+      <div class="lq"><span class="le">🌪️</span>Stress level</div>
+      ${segRow('stress',[{v:'low',t:'Low'},{v:'medium',t:'Medium'},{v:'high',t:'High'}], d.stress)}
+    </div>
+    <div class="log-card">
+      <div class="lq"><span class="le">✨</span>Overall mood</div>
+      <div class="mood-pick" id="lc-mood">${MOODS.map((m,i)=>`<button data-v="${i+1}" class="${d.mood===i+1?'on':''}">${m}</button>`).join('')}</div>
+    </div>`;
+
+  // toggles
+  $('#lc-exercise').classList.toggle('on', d.exercise);
+  $('#lc-exercise').onclick = ()=>{ d.exercise=!d.exercise; $('#lc-exercise').classList.toggle('on', d.exercise); afterDraftChange(); };
+  $('#lc-cannabis').classList.toggle('on', d.cannabis);
+  $('#lc-cannabis').onclick = ()=>{ d.cannabis=!d.cannabis; $('#lc-cannabis').classList.toggle('on', d.cannabis); afterDraftChange(); };
+  // segmented rows
+  $$('#logForm .seg[data-key]').forEach(row=>{
+    const key=row.dataset.key;
+    $$el('button',row).forEach(b=>b.onclick=()=>{
+      $$el('button',row).forEach(x=>x.classList.remove('on')); b.classList.add('on');
+      d[key]=b.dataset.v; afterDraftChange();
+    });
+  });
+  // sleep slider
+  $('#lc-sleep').oninput = e=>{ d.sleep=+e.target.value; e.target.closest('.log-card').querySelector('.sv').textContent=e.target.value+' hrs'; afterDraftChange(); };
+  // mood
+  $$('#lc-mood button').forEach(b=>b.onclick=()=>{
+    $$('#lc-mood button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); d.mood=+b.dataset.v; afterDraftChange();
+  });
+}
+function afterDraftChange(){ renderTodayBar(); }
+
+/* helper to query within an element */
+function $$el(sel, el){ return Array.from(el.querySelectorAll(sel)); }
+
+function renderTodayBar(){
+  const imp = dayImpact(logDraft);
+  const num = $('#tiNum'), mid=$('#tiMid'), save=$('#tiSave');
+  const cls = Math.abs(imp)<0.005 ? 'zero' : (imp>0?'pos':'neg');
+  num.className = 'ti-num '+cls;
+  num.textContent = (imp>=0?'+':'−')+Math.abs(imp).toFixed(2);
+  const logged = !!S.dailyLogs[todayKey()];
+  mid.textContent = logged ? "Today's impact (saved — edits update live)" : "Saturdays from today's choices";
+  save.textContent = logged ? 'Update today' : 'Log today';
+  save.classList.toggle('saved', logged);
+}
+$('#tiSave').onclick = ()=>{
+  const tk = todayKey();
+  const fresh = !S.dailyLogs[tk];
+  S.dailyLogs[tk] = Object.assign({}, logDraft);
+  save();
+  const imp = dayImpact(logDraft);
+  toast(fresh ? `Logged · ${imp>=0?'+':'−'}${Math.abs(imp).toFixed(2)} Saturdays` : 'Today updated');
+  renderLogImpact(); renderTodayBar(); renderLogChart();
+};
+
+/* Stats across the logged history */
+function logStats(){
+  const keys = Object.keys(S.dailyLogs).sort();
+  let best=null, bestK=null, worst=null, worstK=null;
+  keys.forEach(k=>{ const v=dayImpact(S.dailyLogs[k]);
+    if(best==null||v>best){best=v;bestK=k;} if(worst==null||v<worst){worst=v;worstK=k;} });
+  // streak: consecutive days up to today
+  let streak=0; const d=new Date();
+  for(let i=0;i<400;i++){ const k=new Date(d); k.setDate(k.getDate()-i);
+    const key=k.toISOString().slice(0,10);
+    if(S.dailyLogs[key]) streak++; else if(i===0) continue; else break; }
+  return { best, bestK, worst, worstK, streak };
+}
+function prettyDate(k){ if(!k) return '—'; const d=new Date(k+'T00:00:00'); return d.toLocaleDateString('en-US',{month:'short',day:'numeric'}); }
+
+/* 30-day impact chart — bars up (good) / down (bad) from a zero baseline */
+function renderLogChart(){
+  const wrap=$('#logChart');
+  const days=[]; const today=new Date();
+  for(let i=29;i>=0;i--){ const d=new Date(today); d.setDate(d.getDate()-i); const k=d.toISOString().slice(0,10);
+    days.push({k, v:S.dailyLogs[k]?dayImpact(S.dailyLogs[k]):null}); }
+  const has = days.some(x=>x.v!=null);
+  if(!has){ wrap.innerHTML=`<div class="lh">Log a few days and your compounding shows up here.</div>`; renderExtremes(); return; }
+  const W=Math.max(280,(wrap.clientWidth||320)-28), H=120, mid=H/2, pad=2;
+  const maxA=Math.max(0.1, ...days.map(x=>Math.abs(x.v||0)));
+  const bw=(W-pad*2)/30;
+  let svg=`<div class="lh">Daily impact · last 30 days</div><svg viewBox="0 0 ${W} ${H}">`;
+  svg+=`<line x1="0" y1="${mid}" x2="${W}" y2="${mid}" stroke="#2b2b30" stroke-width="1"/>`;
+  days.forEach((x,i)=>{
+    if(x.v==null) return;
+    const h=Math.max(1.5,(Math.abs(x.v)/maxA)*(mid-6));
+    const xx=pad+i*bw+1, ww=Math.max(2,bw-2);
+    const col = x.v>=0 ? '#7fb069' : '#d96a5b';
+    const y = x.v>=0 ? mid-h : mid;
+    svg+=`<rect x="${xx}" y="${y}" width="${ww}" height="${h}" rx="1.5" fill="${col}"/>`;
+  });
+  wrap.innerHTML=svg+`</svg>`;
+  renderExtremes();
+}
+function renderExtremes(){
+  const st=logStats(), wrap=$('#logExtremes');
+  if(st.best==null){ wrap.innerHTML=''; return; }
+  wrap.innerHTML=`
+    <div class="lx"><div class="lxl">Best day</div>
+      <div class="lxv pos">+${Math.abs(st.best).toFixed(2)} Saturdays</div>
+      <div class="lxd">${prettyDate(st.bestK)}</div></div>
+    <div class="lx"><div class="lxl">Worst day</div>
+      <div class="lxv ${st.worst<0?'neg':'pos'}">${st.worst<0?'−':'+'}${Math.abs(st.worst).toFixed(2)} Saturdays</div>
+      <div class="lxd">${prettyDate(st.worstK)}</div></div>`;
 }
 
 /* ============================================================
