@@ -334,6 +334,7 @@
 
   /* ---------- Multi-step onboarding ---------- */
   #onboard{justify-content:flex-start;overflow-y:auto;padding-top:calc(28px + var(--safe-top));}
+  .ob-close{position:absolute;top:calc(20px + var(--safe-top));right:22px;z-index:2;color:var(--ink-dim);font-size:14px;font-weight:600;padding:8px 12px;border-radius:20px;background:var(--card);border:1px solid var(--line-soft);}
   .ob-progress{display:flex;gap:6px;margin-bottom:28px;}
   .ob-progress i{flex:1;height:4px;border-radius:3px;background:var(--line);transition:background .35s;}
   .ob-progress i.on{background:var(--accent);}
@@ -428,6 +429,7 @@
 
   <!-- ====== ONBOARDING (5-step health intake) ====== -->
   <div id="onboard">
+    <button class="ob-close" id="obClose" style="display:none">Cancel</button>
     <div class="ob-progress" id="obProgress">
       <i class="on"></i><i></i><i></i><i></i><i></i>
     </div>
@@ -794,6 +796,10 @@
     <div class="sheet">
       <h3>More</h3>
       <div class="more-grid">
+        <button data-action="profile">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l2 6 4-12 2 6h6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div><div class="mt">Health profile</div><div class="md">Update your habits &amp; baseline</div></div>
+        </button>
         <button data-screen="presence">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <div><div class="mt">Presence</div><div class="md">Was this Saturday intentional?</div></div>
@@ -1223,6 +1229,49 @@ function animateReveal(target){
 }
 $('#revealGo').onclick = ()=>{ $('#onboard').classList.add('hide'); bootApp(); showScreen('clock'); };
 
+/* Re-open the intake later (from More → Health profile), pre-filled with the
+   saved profile so the user is editing, not starting over. */
+function loadProfileIntoOb(){
+  obData.bday = S.bday || null;
+  obData.sex  = S.sex  || null;
+  const p = S.profile;
+  if(p){
+    obData.heightFt = p.heightFt || null; obData.heightIn = p.heightIn || 0; obData.weightLbs = p.weightLbs || null;
+    obData.exercise = p.exercise || null; obData.smoke = p.smoke || 'none'; obData.cigsPerDay = p.cigsPerDay || 10;
+    obData.cannabisFreq = p.cannabisFreq || 'occasionally';
+    obData.drinksPerWeek = p.drinksPerWeek!=null ? p.drinksPerWeek : 3;
+    obData.diet = p.diet || 'average'; obData.sleepHours = p.sleepHours!=null ? p.sleepHours : 7.5;
+    obData.familyLongevity = p.familyLongevity || 'no'; obData.chronic = p.chronic || 'none'; obData.mental = p.mental || 'good';
+  }
+  // Reflect obData back into the controls
+  $('#ob-bday').value = obData.bday || '';
+  obPreselect('#ob-sex', obData.sex);
+  $('#ob-ht-ft').value = obData.heightFt || '';
+  $('#ob-ht-in').value = obData.heightIn != null ? obData.heightIn : '';
+  $('#ob-wt').value = obData.weightLbs || '';
+  obPreselect('#ob-exercise', obData.exercise);
+  obPreselect('#ob-smoke', obData.smoke);
+  $('#ob-cigs-wrap').classList.toggle('show', obData.smoke==='cigarettes'||obData.smoke==='both');
+  $('#ob-canfreq-wrap').classList.toggle('show', obData.smoke==='cannabis'||obData.smoke==='both');
+  $('#ob-cigs').value = obData.cigsPerDay; $('#ob-cigs-v').textContent = obData.cigsPerDay;
+  obPreselect('#ob-canfreq', obData.cannabisFreq);
+  $('#ob-drinks').value = obData.drinksPerWeek; $('#ob-drinks-v').textContent = obData.drinksPerWeek>=30 ? '30+' : obData.drinksPerWeek;
+  obPreselect('#ob-diet', obData.diet);
+  $('#ob-sleep').value = obData.sleepHours; $('#ob-sleep-v').textContent = obData.sleepHours+' hrs';
+  obPreselect('#ob-longevity', obData.familyLongevity);
+  obPreselect('#ob-chronic', obData.chronic);
+  obPreselect('#ob-mental', obData.mental);
+}
+function openOnboarding(){
+  loadProfileIntoOb();
+  // Cancel is only offered when there's already a profile to return to.
+  $('#obClose').style.display = S.bday ? 'block' : 'none';
+  $('#ob-reveal').classList.remove('show');
+  $('#onboard').classList.remove('hide');
+  obGoStep(1);
+}
+$('#obClose').onclick = ()=>{ if(S.bday){ $('#onboard').classList.add('hide'); showScreen('clock'); } };
+
 /* ============================================================
    NAV
 ============================================================ */
@@ -1252,6 +1301,9 @@ $('#moremenu').onclick = e=>{ if(e.target===$('#moremenu')) $('#moremenu').class
 $$('#moremenu button[data-screen]').forEach(b=>b.onclick=()=>{
   $('#moremenu').classList.remove('open'); showScreen(b.dataset.screen);
 });
+$('#moremenu button[data-action="profile"]').onclick = ()=>{
+  $('#moremenu').classList.remove('open'); openOnboarding();
+};
 
 /* Ambient mode */
 $('#ambientBtn').onclick = ()=>{
