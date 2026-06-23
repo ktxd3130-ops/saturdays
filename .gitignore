@@ -8,3 +8,4 @@ www
 
 # Xcode CLI build output (xcodebuild -derivedDataPath build)
 build
+!scripts/.env.release.example
