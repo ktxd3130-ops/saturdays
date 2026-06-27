@@ -1330,10 +1330,15 @@ function save(){ Store.set(KEY, JSON.stringify(S)); writeWidgetData(); }
 /* ---------- Widget bridge (native only) ----------
    Mirrors a tiny snapshot into the shared App Group so the iOS WidgetKit
    extension can show the live Saturday count without launching the app.
-   Preferences is configured (in init) to use the App Group suite, and it
-   prefixes keys — so the Swift widget reads:
-     UserDefaults(suiteName: APP_GROUP)?.string(forKey: "CapacitorStorage.saturdays_widget")
-   The widget can recompute from birthday + adjustmentYears to stay fresh
+
+   NOTE: we do NOT route this through @capacitor/preferences. Preferences
+   always writes to UserDefaults.standard (the app's private sandbox) and
+   treats its `group` option as a key-prefix only — a widget extension is a
+   separate sandbox and can never read that. Instead the native WidgetBridge
+   plugin (ios/App/App/WidgetBridgePlugin.swift) writes straight into the
+   real App Group suite, where the Swift widget reads:
+     UserDefaults(suiteName: APP_GROUP)?.string(forKey: WIDGET_KEY)
+   The widget recomputes from birthday + adjustmentYears to stay fresh
    between app opens. */
 const APP_GROUP  = 'group.com.kendalldale.saturdays';
 const WIDGET_KEY = 'saturdays_widget';
@@ -1343,13 +1348,15 @@ function writeWidgetData(){
     // Fold the compounding daily adjustment (in Saturdays) into the year-delta
     // the widget recomputes from, so the home-screen number reflects logging too.
     const adj = bonusYears() + compoundSaturdays()/52;
-    Store.set(WIDGET_KEY, JSON.stringify({
+    const json = JSON.stringify({
       saturdaysLeft: Math.round(totalLeft()),
       birthday: S.bday,
       sex: S.sex,
       adjustmentYears: adj,
       asOf: new Date().toISOString()
-    }));
+    });
+    const WB = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.WidgetBridge;
+    if(WB && WB.write){ WB.write({ json, group: APP_GROUP, key: WIDGET_KEY }); }
   }catch(e){ /* widget mirror is best-effort */ }
 }
 
@@ -2705,13 +2712,9 @@ window.addEventListener('resize', ()=>{ if($('#screen-clock').classList.contains
 window.addEventListener('orientationchange', ()=>setTimeout(drawGrid,300));
 
 (async function init(){
-  // Route Preferences into the shared App Group suite so the widget reads the
-  // same store. Must run before the first read. No-op on web.
-  const _cap = window.Capacitor;
-  if(_cap && _cap.isNativePlatform && _cap.isNativePlatform()){
-    const P = _cap.Plugins && _cap.Plugins.Preferences;
-    if(P && P.configure){ try{ await P.configure({ group: APP_GROUP }); }catch(e){} }
-  }
+  // The widget no longer relies on Preferences' suite: the native WidgetBridge
+  // plugin writes the snapshot straight into the App Group (see writeWidgetData).
+  // So Preferences stays on its default store — no configure() needed.
   S = await loadState();
   // Theme: the inline <head> script already applied localStorage's value pre-paint.
   // Reconcile from the durable store in case web localStorage was evicted on native.

@@ -16,8 +16,11 @@ import Foundation
 
 enum WidgetStore {
     static let appGroup = "group.com.kendalldale.saturdays"
-    // @capacitor/preferences prefixes every key with "CapacitorStorage."
-    static let key = "CapacitorStorage.saturdays_widget"
+    // Written by the app's native WidgetBridge plugin straight into the App
+    // Group suite (NOT via @capacitor/preferences, which can't reach an App
+    // Group and would key-prefix with "CapacitorStorage."). Plain key, must
+    // match WIDGET_KEY in index.html and WidgetBridgePlugin's defaultKey.
+    static let key = "saturdays_widget"
 
     /// The raw snapshot the web app mirrors on every save/boot:
     /// { saturdaysLeft, birthday, sex, adjustmentYears, asOf }
