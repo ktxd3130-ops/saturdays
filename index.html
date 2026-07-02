@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0a0a0b">
 <meta name="description" content="How many Saturdays do you have left? A memento mori for the modern age.">
 <title>Saturdays</title>
@@ -36,6 +36,8 @@
     --r:18px;
     --safe-top:env(safe-area-inset-top,0px);
     --safe-bot:env(safe-area-inset-bottom,0px);
+    --safe-left:env(safe-area-inset-left,0px);
+    --safe-right:env(safe-area-inset-right,0px);
   }
 
   /* ============ THEMES — override the variable set on <html data-theme> ============
@@ -101,7 +103,7 @@
   body.ambient .topbar,body.ambient .nav,body.ambient .screen:not(#screen-clock){display:none!important;}
   body.ambient #screen-clock{padding-bottom:40px;}
   button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
-  input,select{font-family:inherit;}
+  input,select,textarea{font-family:inherit;font-size:16px;} /* 16px min — iOS auto-zooms inputs below 16px */
   ::-webkit-scrollbar{width:0;height:0;}
 
   .app{max-width:520px;margin:0 auto;min-height:100%;position:relative;}
@@ -110,7 +112,7 @@
   #onboard{
     position:fixed;inset:0;z-index:50;background:var(--bg);
     display:flex;flex-direction:column;justify-content:center;
-    padding:32px 26px calc(32px + var(--safe-bot));
+    padding:32px calc(26px + var(--safe-right)) calc(32px + var(--safe-bot)) calc(26px + var(--safe-left));
     max-width:520px;margin:0 auto;
   }
   #onboard.hide{display:none;}
@@ -1967,7 +1969,10 @@ const VISIT_NOUN = {
 /* Everything the People card and the share image need about one person. */
 function peopleStat(p){
   const s = sharedSaturdays(p);
-  const visits = Math.max(0, Math.round((s.shared/52)*p.freq));
+  // Saturdays you'll actually spend together, capped by the shorter life.
+  // Seeing someone weekly-or-more means every shared Saturday counts (factor 1);
+  // seeing them less often reduces the count proportionally — never inflates it.
+  const visits = Math.max(0, Math.round(s.shared * Math.min(1, p.freq/52)));
   const noun = VISIT_NOUN[p.rel] || VISIT_NOUN.other;
   return { shared:s.shared, visits, noun,
     unit: visits===1 ? noun.one : noun.many,
