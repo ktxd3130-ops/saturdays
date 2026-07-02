@@ -127,6 +127,37 @@
     transition:border-color .2s;
   }
   .field input:focus,.field select:focus{border-color:var(--accent);}
+
+  /* ---- Birthday date picker: make it obviously tappable ---- */
+  .date-wrap{position:relative;}
+  #ob-bday{
+    position:relative;cursor:pointer;
+    padding:12px 46px 12px 16px;          /* shorter + room for the icon */
+    border-color:var(--accent);           /* subtle highlight signals "tap me" */
+    -webkit-appearance:none;appearance:none;
+  }
+  #ob-bday::-webkit-datetime-edit{color:var(--ink);}          /* selected date = light */
+  #ob-bday.date-empty::-webkit-datetime-edit{color:transparent;} /* hide mm/dd/yyyy when empty */
+  /* Make tapping anywhere in the field open the native picker (also hides default glyph) */
+  #ob-bday::-webkit-calendar-picker-indicator{
+    position:absolute;inset:0;width:auto;height:auto;margin:0;padding:0;opacity:0;cursor:pointer;
+  }
+  .date-ph{
+    display:none;position:absolute;left:16px;top:50%;transform:translateY(-50%);
+    color:var(--ink-dim);font-size:16px;pointer-events:none;white-space:nowrap;
+  }
+  #ob-bday.date-empty ~ .date-ph{display:block;}             /* placeholder only while empty */
+  .date-caret{
+    position:absolute;right:14px;top:50%;transform:translateY(-50%);
+    font-size:17px;pointer-events:none;opacity:.9;
+  }
+
+  /* ---- Tighten Step 1 so it reads more compact ---- */
+  #ob-s1 .ob-kicker{margin-bottom:14px;}
+  #ob-s1 h2{margin-bottom:6px;}
+  #ob-s1 .ob-step-sub{margin-bottom:20px;}
+  #ob-s1 .field{margin-bottom:16px;}
+  #ob-s1 .ob-nav{margin-top:22px;}
   .seg{display:flex;gap:8px;}
   .seg button{
     flex:1;padding:14px 8px;border-radius:13px;background:var(--card);border:1px solid var(--line);
@@ -632,9 +663,13 @@
       <div class="ob-kicker">Step 1 of 4 · Basics</div>
       <h2>Let's start with you.</h2>
       <p class="ob-step-sub">Your age and sex set the baseline from U.S. actuarial life tables.</p>
-      <div class="field">
+      <div class="field field-date">
         <label>When were you born?</label>
-        <input type="date" id="ob-bday" max="2025-12-31" min="1920-01-01">
+        <div class="date-wrap">
+          <input type="date" id="ob-bday" class="date-empty" max="2025-12-31" min="1920-01-01">
+          <span class="date-ph">Tap to select your birthday</span>
+          <span class="date-caret" aria-hidden="true">📅</span>
+        </div>
       </div>
       <div class="field">
         <label>Sex (for life-expectancy estimate)</label>
@@ -1480,7 +1515,7 @@ obPreselect('#ob-chronic','none');
 obPreselect('#ob-mental','good');
 obPreselect('#ob-smoke','none');
 
-$('#ob-bday').oninput = ()=>{ obData.bday = $('#ob-bday').value || null; obValidate(); };
+$('#ob-bday').oninput = ()=>{ const el=$('#ob-bday'); obData.bday = el.value || null; el.classList.toggle('date-empty', !el.value); obValidate(); };
 $('#ob-wt').oninput  = ()=>{ obData.weightLbs = +$('#ob-wt').value || null; obValidate(); };
 
 /* Sliders with live value labels */
@@ -1555,6 +1590,7 @@ function loadProfileIntoOb(){
   }
   // Reflect obData back into the controls
   $('#ob-bday').value = obData.bday || '';
+  $('#ob-bday').classList.toggle('date-empty', !obData.bday);
   obPreselect('#ob-sex', obData.sex);
   $('#ob-ht-ft').value = obData.heightFt || '';
   $('#ob-ht-in').value = obData.heightIn != null ? obData.heightIn : '';
