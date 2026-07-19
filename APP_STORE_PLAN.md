@@ -162,7 +162,7 @@ Death-clock apps **are approved** — precedents include *WeCroak* ("you're goin
 
 ### Listing copy (ASO)
 - [ ] **Name:** `Saturdays` (check availability; fallback `Saturdays: Memento Mori`).
-- [ ] **Subtitle (30 chars):** e.g. *"How many do you have left?"*
+- [ ] **Subtitle (30 chars):** `Life Time Tracker`
 - [ ] **Keywords (100 chars):** memento mori, life calendar, weeks, mortality, presence, stoic, life clock, countdown.
 - [ ] **Description, promotional text, support URL, marketing URL** (point support/marketing at the Vercel site).
 - [ ] **Privacy Policy URL** — **mandatory.** Host at `saturdays-vert.vercel.app/privacy`. Easy win: "we collect nothing, everything is on-device."

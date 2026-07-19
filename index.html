@@ -3,36 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#0a0a0b">
+<meta name="theme-color" content="#000000">
 <meta name="description" content="How many Saturdays do you have left? A memento mori for the modern age.">
 <title>Saturdays</title>
 <!-- Apply the saved theme before first paint to avoid a flash of the default. -->
-<script>(function(){try{var t=localStorage.getItem('saturdays_theme')||'midnight';if(!['midnight','wellness','dawn','minimal'].includes(t))t='midnight';document.documentElement.setAttribute('data-theme',t);var c={midnight:'#0a0a0b',wellness:'#1a1f2e',dawn:'#faf5ef',minimal:'#ffffff'}[t];var m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',c);}catch(e){}})();</script>
+<script>(function(){try{var t=localStorage.getItem('saturdays_theme')||'midnight';if(!['midnight','wellness','dawn','minimal'].includes(t))t='midnight';document.documentElement.setAttribute('data-theme',t);var c={midnight:'#000000',wellness:'#000000',dawn:'#faf5ef',minimal:'#ffffff'}[t];var m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',c);}catch(e){}})();</script>
 <style>
   :root{
-    --bg:#0a0a0b;
-    --bg-soft:#121214;
-    --card:#161618;
-    --card-hi:#1d1d20;
-    --line:#26262b;
-    --line-soft:#1c1c20;
-    --ink:#f4f1ea;
-    --ink-dim:#9a958c;
-    --ink-faint:#5c584f;
-    --accent:#f0a04b;       /* warm amber */
+    /* Golden Hour (default) — true black + warm amber, per the Saturdays brand tokens. */
+    --bg:#000000;
+    --bg-soft:#100e0c;
+    --card:#1c1917;          /* Warm Dark Walnut */
+    --card-hi:#262220;
+    --line:#3a342e;
+    --line-soft:#2c2723;
+    --ink:#fafaf9;            /* Warm Alabaster */
+    --ink-dim:#a9a39a;
+    --ink-faint:#7a746b;
+    --accent:#f0a04b;       /* Live Amber */
     --accent-deep:#d97b2e;
     --accent-soft:#3a2a18;
     --good:#7fb069;
     --bad:#d96a5b;
     --dot-lived:#f0a04b;
-    --dot-left:#2b2b30;
+    --dot-left:#57534e;      /* Stone Taupe track */
     --dot-now:#fff0dc;
     --on-accent:#1a1206;    /* text/icon color on top of an accent fill */
     --hero-top:#ffffff;     /* bright stop of the big-number gradient */
     --hero-bot:var(--accent);
-    --nav-bg:rgba(14,14,16,.86);    /* frosted bottom-nav background */
-    --glass-bg:rgba(20,20,22,.94);  /* frosted sticky "today's impact" bar */
-    --shadow:0 20px 60px rgba(0,0,0,.55);
+    --nav-bg:rgba(28,25,23,.86);    /* frosted bottom-nav background */
+    --glass-bg:rgba(28,25,23,.94);  /* frosted sticky "today's impact" bar */
+    --shadow:0 20px 60px rgba(0,0,0,.6);
     --r:18px;
     --safe-top:env(safe-area-inset-top,0px);
     --safe-bot:env(safe-area-inset-bottom,0px);
@@ -43,15 +44,15 @@
   /* ============ THEMES — override the variable set on <html data-theme> ============
      Every surface, text tier, accent and dot color flows from these variables, so
      one attribute swaps the whole app. Contrast is tuned to clear 4.5:1 on text. */
-  [data-theme="wellness"]{               /* calm dark navy + sage — meditation feel */
-    --bg:#1a1f2e; --bg-soft:#202637; --card:#232b3d; --card-hi:#2b3548; --line:#39435c; --line-soft:#2a3346;
-    --ink:#eef2f8; --ink-dim:#aab6c8; --ink-faint:#74809a;
-    --accent:#7ab8a0; --accent-deep:#5a9a82; --accent-soft:#2a3a34;
+  [data-theme="wellness"]{               /* Indigo Focus — true black + cool slate navy + indigo iris */
+    --bg:#000000; --bg-soft:#05070d; --card:#0f172a; --card-hi:#16213a; --line:#29344c; --line-soft:#1c2438;
+    --ink:#f8fafc; --ink-dim:#aab4c8; --ink-faint:#6b7690;
+    --accent:#6366f1; --accent-deep:#4f46e5; --accent-soft:#20233f;
     --good:#7ab8a0; --bad:#dd917f;
-    --dot-lived:#7ab8a0; --dot-left:#33405a; --dot-now:#e2f0ea;
-    --on-accent:#0e1a14; --hero-top:#ffffff; --hero-bot:var(--accent);
-    --nav-bg:rgba(26,31,46,.9); --glass-bg:rgba(35,43,61,.94);
-    --shadow:0 18px 50px rgba(0,0,0,.45); --r:22px;
+    --dot-lived:#6366f1; --dot-left:#1e293b; --dot-now:#e6e8fc;
+    --on-accent:#f5f5ff; --hero-top:#ffffff; --hero-bot:var(--accent);
+    --nav-bg:rgba(15,23,42,.9); --glass-bg:rgba(22,33,58,.94);
+    --shadow:0 18px 50px rgba(0,0,0,.5); --r:22px;
   }
   [data-theme="wellness"] .hero-num,[data-theme="wellness"] .reveal-num{font-weight:600;}
   [data-theme="wellness"] .ob-title,[data-theme="wellness"] .sec-h h2,
@@ -194,6 +195,7 @@
   .hero{text-align:center;padding:14px 0 8px;}
   .hero-label{color:var(--ink-dim);font-size:15px;font-weight:500;margin-bottom:4px;}
   .hero-num{
+    font-family:'SF Pro Rounded','SF Pro Display',-apple-system,system-ui,sans-serif;
     font-size:clamp(68px,21vw,108px);font-weight:800;line-height:.92;letter-spacing:-.04em;
     background:linear-gradient(170deg,var(--hero-top) 5%,var(--hero-bot) 130%);
     -webkit-background-clip:text;background-clip:text;color:transparent;
@@ -209,7 +211,7 @@
 
   .stats{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:24px;}
   .stat{background:var(--card);border:1px solid var(--line-soft);border-radius:var(--r);padding:16px 16px;}
-  .stat .v{font-size:25px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;}
+  .stat .v{font-family:'SF Pro Rounded','SF Pro Display',-apple-system,system-ui,sans-serif;font-size:25px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;}
   .stat .v small{font-size:14px;color:var(--ink-dim);font-weight:500;}
   .stat .l{color:var(--ink-dim);font-size:12.5px;margin-top:3px;}
   .barwrap{margin-top:18px;background:var(--card);border:1px solid var(--line-soft);border-radius:var(--r);padding:16px 17px;}
@@ -453,6 +455,7 @@
   .reveal-kicker{color:var(--accent);font-size:13px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;opacity:0;transition:opacity 1s ease;}
   .reveal-pre{color:var(--ink-dim);font-size:18px;font-weight:500;margin-top:24px;opacity:0;transition:opacity 1s ease .3s;}
   .reveal-num{
+    font-family:'SF Pro Rounded','SF Pro Display',-apple-system,system-ui,sans-serif;
     font-size:clamp(78px,26vw,140px);font-weight:800;line-height:.9;letter-spacing:-.04em;margin:6px 0 2px;
     background:linear-gradient(165deg,var(--hero-top) 0%,var(--hero-bot) 115%);
     -webkit-background-clip:text;background-clip:text;color:transparent;font-variant-numeric:tabular-nums;
@@ -2591,8 +2594,8 @@ $('#shareBtn').onclick=async()=>{
    THEME SYSTEM — one attribute on <html> swaps every surface.
 ============================================================ */
 const THEMES = [
-  {id:'midnight', name:'Midnight', desc:'Warm amber on black',   swatch:['#0a0a0b','#f0a04b','#1d1d20'], color:'#0a0a0b'},
-  {id:'wellness', name:'Wellness', desc:'Calm sage & navy',      swatch:['#1a1f2e','#7ab8a0','#232b3d'], color:'#1a1f2e'},
+  {id:'midnight', name:'Golden Hour', desc:'Warm amber on true black', swatch:['#000000','#f0a04b','#1c1917'], color:'#000000'},
+  {id:'wellness', name:'Indigo Focus', desc:'Indigo iris on true black', swatch:['#000000','#6366f1','#0f172a'], color:'#000000'},
   {id:'dawn',     name:'Dawn',     desc:'Cream & terracotta',    swatch:['#faf5ef','#c4765a','#ffffff'], color:'#faf5ef'},
   {id:'minimal',  name:'Minimal',  desc:'White, gold & black',   swatch:['#ffffff','#b8960c','#0a0a0a'], color:'#ffffff'},
 ];
