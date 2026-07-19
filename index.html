@@ -3,56 +3,90 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#f6f8fc">
 <meta name="description" content="How many Saturdays do you have left? A memento mori for the modern age.">
 <title>Saturdays</title>
 <!-- Apply the saved theme before first paint to avoid a flash of the default. -->
-<script>(function(){try{var t=localStorage.getItem('saturdays_theme')||'midnight';if(!['midnight','wellness','dawn','minimal'].includes(t))t='midnight';document.documentElement.setAttribute('data-theme',t);var c={midnight:'#000000',wellness:'#000000',dawn:'#faf5ef',minimal:'#ffffff'}[t];var m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',c);}catch(e){}})();</script>
+<script>(function(){try{var t=localStorage.getItem('saturdays_theme')||'clinical';if(!['cardstock','clinical','wellness','midnight'].includes(t))t='clinical';document.documentElement.setAttribute('data-theme',t);var c={cardstock:'#f4efe3',clinical:'#f6f8fc',wellness:'#14161d',midnight:'#1a1714'}[t];var m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',c);}catch(e){}})();</script>
 <style>
   :root{
     /* Golden Hour (default) — true black + warm amber, per the Saturdays brand tokens. */
     --bg:#000000;
-    --bg-soft:#100e0c;
+    --bg-soft:#0b0a09;
     --card:#1c1917;          /* Warm Dark Walnut */
     --card-hi:#262220;
-    --line:#3a342e;
-    --line-soft:#2c2723;
+    --line:#332e2a;
+    --line-soft:#241f1c;
     --ink:#fafaf9;            /* Warm Alabaster */
-    --ink-dim:#a9a39a;
-    --ink-faint:#7a746b;
-    --accent:#f0a04b;       /* Live Amber */
-    --accent-deep:#d97b2e;
-    --accent-soft:#3a2a18;
+    --ink-dim:#a8a29e;
+    --ink-faint:#78716c;
+    --accent:#f59e0b;        /* Golden Hour — brighter, cleaner gold */
+    --accent-deep:#c2740a;
+    --accent-soft:#2a2113;
+    --accent-glow:rgba(245,158,11,.42);   /* gold halo for the Saturday apex */
     --good:#7fb069;
-    --bad:#d96a5b;
-    --dot-lived:#f0a04b;
-    --dot-left:#57534e;      /* Stone Taupe track */
-    --dot-now:#fff0dc;
+    --bad:#e5484d;
+    --dot-lived:#f59e0b;
+    --dot-left:#3a342f;      /* dim remaining-Saturday dots so lived gold pops */
+    --dot-now:#fde68a;       /* soft luminous gold "now" marker */
     --on-accent:#1a1206;    /* text/icon color on top of an accent fill */
-    --hero-top:#ffffff;     /* bright stop of the big-number gradient */
-    --hero-bot:var(--accent);
+    --hero-top:#ffffff;     /* big-number gradient — alabaster; gold stays reserved for the star */
+    --hero-bot:#efeae3;
     --nav-bg:rgba(28,25,23,.86);    /* frosted bottom-nav background */
     --glass-bg:rgba(28,25,23,.94);  /* frosted sticky "today's impact" bar */
-    --shadow:0 20px 60px rgba(0,0,0,.6);
-    --r:18px;
+    --shadow:0 20px 60px rgba(0,0,0,.55);
+    --r:20px;
     --safe-top:env(safe-area-inset-top,0px);
     --safe-bot:env(safe-area-inset-bottom,0px);
     --safe-left:env(safe-area-inset-left,0px);
     --safe-right:env(safe-area-inset-right,0px);
   }
 
+  [data-theme="cardstock"]{        /* Cardstock — warm thick off-white paper, dark ink, gold */
+    --bg:#f4efe3; --bg-soft:#ece4d4; --card:#fdfaf4; --card-hi:#fffdf8; --line:#ddd2bf; --line-soft:#e9e1d1;
+    --ink:#241f18; --ink-dim:#6d6355; --ink-faint:#a89b86;
+    --accent:#c2740a; --accent-deep:#9a5c08; --accent-soft:#f0e3cc; --accent-glow:rgba(194,116,10,.30);
+    --good:#3f8f57; --bad:#c4452f;
+    --dot-lived:#c2740a; --dot-left:#e2d8c6; --dot-now:#9a5c08;
+    --on-accent:#fffbf3; --hero-top:#241f18; --hero-bot:#4a4032;
+    --nav-bg:rgba(244,239,227,.86); --glass-bg:rgba(253,250,244,.94);
+    --shadow:0 16px 40px rgba(90,70,40,.14); --r:20px;
+  }
+
+  [data-theme="clinical"]{         /* Clinical — clean cool white + indigo (Apple-Health light) */
+    --bg:#f6f8fc; --bg-soft:#eef1f8; --card:#ffffff; --card-hi:#f9fbff; --line:#e2e7f0; --line-soft:#eef1f7;
+    --ink:#1a2233; --ink-dim:#5b6577; --ink-faint:#9aa3b4;
+    --accent:#4f46e5; --accent-deep:#4035c4; --accent-soft:#e7e6fb; --accent-glow:rgba(79,70,229,.25);
+    --good:#2f9e6f; --bad:#dc4c4c;
+    --dot-lived:#4f46e5; --dot-left:#e2e5f0; --dot-now:#3a30b5;
+    --on-accent:#ffffff; --hero-top:#5b52ea; --hero-bot:#4035c4;
+    --nav-bg:rgba(246,248,252,.86); --glass-bg:rgba(255,255,255,.94);
+    --shadow:0 12px 40px rgba(40,40,90,.08); --r:20px;
+  }
+
+  [data-theme="midnight"]{         /* Graphite — warm elevated charcoal (NOT black) + soft gold */
+    --bg:#1a1714; --bg-soft:#211d18; --card:#262019; --card-hi:#2f2820; --line:#3a3228; --line-soft:#2c261e;
+    --ink:#efe9df; --ink-dim:#a89d8b; --ink-faint:#6f6657;
+    --accent:#f0b45a; --accent-deep:#d9973a; --accent-soft:#3a2f1e; --accent-glow:rgba(240,180,90,.30);
+    --good:#6fb98a; --bad:#e0806f;
+    --dot-lived:#f0b45a; --dot-left:#332d24; --dot-now:#ffe7c2;
+    --on-accent:#241a09; --hero-top:#fff6e8; --hero-bot:#f0b45a;
+    --nav-bg:rgba(26,23,20,.86); --glass-bg:rgba(38,32,25,.94);
+    --shadow:0 18px 50px rgba(0,0,0,.4); --r:20px;
+  }
+
   /* ============ THEMES — override the variable set on <html data-theme> ============
      Every surface, text tier, accent and dot color flows from these variables, so
      one attribute swaps the whole app. Contrast is tuned to clear 4.5:1 on text. */
-  [data-theme="wellness"]{               /* Indigo Focus — true black + cool slate navy + indigo iris */
-    --bg:#000000; --bg-soft:#05070d; --card:#0f172a; --card-hi:#16213a; --line:#29344c; --line-soft:#1c2438;
-    --ink:#f8fafc; --ink-dim:#aab4c8; --ink-faint:#6b7690;
-    --accent:#6366f1; --accent-deep:#4f46e5; --accent-soft:#20233f;
-    --good:#7ab8a0; --bad:#dd917f;
-    --dot-lived:#6366f1; --dot-left:#1e293b; --dot-now:#e6e8fc;
-    --on-accent:#f5f5ff; --hero-top:#ffffff; --hero-bot:var(--accent);
-    --nav-bg:rgba(15,23,42,.9); --glass-bg:rgba(22,33,58,.94);
-    --shadow:0 18px 50px rgba(0,0,0,.5); --r:22px;
+  [data-theme="wellness"]{         /* Slate — cool elevated charcoal (NOT black) + soft indigo */
+    --bg:#14161d; --bg-soft:#1a1d26; --card:#1e212b; --card-hi:#262a36; --line:#2e3340; --line-soft:#22262f;
+    --ink:#e8eaf2; --ink-dim:#9aa0b2; --ink-faint:#666d80;
+    --accent:#8280f0; --accent-deep:#6462e0; --accent-soft:#26263a; --accent-glow:rgba(130,128,240,.30);
+    --good:#5ec2a0; --bad:#e07b7b;
+    --dot-lived:#8280f0; --dot-left:#2a2e3b; --dot-now:#dcdcfb;
+    --on-accent:#15152b; --hero-top:#f4f4ff; --hero-bot:#8280f0;
+    --nav-bg:rgba(20,22,29,.86); --glass-bg:rgba(30,33,43,.94);
+    --shadow:0 18px 50px rgba(0,0,0,.45); --r:20px;
   }
   [data-theme="wellness"] .hero-num,[data-theme="wellness"] .reveal-num{font-weight:600;}
   [data-theme="wellness"] .ob-title,[data-theme="wellness"] .sec-h h2,
@@ -181,7 +215,8 @@
     padding:calc(14px + var(--safe-top)) 20px 12px;
     background:linear-gradient(180deg,var(--bg) 60%,rgba(10,10,11,0));
   }
-  .brand{font-size:16px;font-weight:700;letter-spacing:.02em;}
+  .brand{font-size:16px;font-weight:700;letter-spacing:.02em;display:inline-flex;align-items:center;}
+  .brand-star{height:27px;width:27px;margin-right:6px;color:var(--accent);overflow:visible;flex:none;}
   .brand span{color:var(--accent);}
   .icon-btn{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--ink-dim);background:var(--card);border:1px solid var(--line-soft);}
   .icon-btn svg{width:18px;height:18px;}
@@ -195,7 +230,7 @@
   .hero{text-align:center;padding:14px 0 8px;}
   .hero-label{color:var(--ink-dim);font-size:15px;font-weight:500;margin-bottom:4px;}
   .hero-num{
-    font-family:'SF Pro Rounded','SF Pro Display',-apple-system,system-ui,sans-serif;
+    font-family:ui-rounded,'SF Pro Rounded','SF Pro Display',-apple-system,system-ui,sans-serif;
     font-size:clamp(68px,21vw,108px);font-weight:800;line-height:.92;letter-spacing:-.04em;
     background:linear-gradient(170deg,var(--hero-top) 5%,var(--hero-bot) 130%);
     -webkit-background-clip:text;background-clip:text;color:transparent;
@@ -208,10 +243,17 @@
   #lifeGrid{width:100%;display:block;border-radius:10px;}
   .grid-legend{display:flex;gap:18px;justify-content:center;margin-top:14px;color:var(--ink-faint);font-size:12px;}
   .grid-legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle;}
+  /* 7-bar weekly cadence — the routine week (S–F) builds to the glowing Saturday apex. */
+  .cadence{display:flex;align-items:flex-end;justify-content:center;gap:15px;height:40px;margin:6px 0 2px;}
+  .cadence .cb{display:flex;flex-direction:column;align-items:center;gap:9px;}
+  .cadence .cb i{display:block;width:5px;height:20px;border-radius:3px;background:var(--line);opacity:.75;}
+  .cadence .cb span{font-size:10px;font-weight:600;letter-spacing:.06em;color:var(--ink-faint);}
+  .cadence .cb.sat i{width:9px;height:32px;background:var(--accent);opacity:1;box-shadow:0 0 14px var(--accent-glow,rgba(245,158,11,.4));}
+  .cadence .cb.sat span{color:var(--accent);font-weight:800;}
 
   .stats{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:24px;}
   .stat{background:var(--card);border:1px solid var(--line-soft);border-radius:var(--r);padding:16px 16px;}
-  .stat .v{font-family:'SF Pro Rounded','SF Pro Display',-apple-system,system-ui,sans-serif;font-size:25px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;}
+  .stat .v{font-family:ui-rounded,'SF Pro Rounded','SF Pro Display',-apple-system,system-ui,sans-serif;font-size:25px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;}
   .stat .v small{font-size:14px;color:var(--ink-dim);font-weight:500;}
   .stat .l{color:var(--ink-dim);font-size:12.5px;margin-top:3px;}
   .barwrap{margin-top:18px;background:var(--card);border:1px solid var(--line-soft);border-radius:var(--r);padding:16px 17px;}
@@ -242,6 +284,10 @@
   .sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .2s cubic-bezier(.3,.8,.4,1);}
   .toggle.on .sw,.toggle-card.on .sw{background:var(--accent);}
   .toggle.on .sw::after,.toggle-card.on .sw::after{transform:translateX(20px);}
+  .rem-time{display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--line-soft);border-radius:var(--r);padding:12px 16px;margin-top:9px;}
+  .rem-time[hidden]{display:none;}
+  .rem-time-lbl{font-size:15px;color:var(--ink-dim);font-weight:500;}
+  .rem-time input[type=time]{background:var(--bg-soft);border:1px solid var(--line);color:var(--ink);font-size:16px;font-weight:600;padding:8px 12px;border-radius:12px;outline:none;font-variant-numeric:tabular-nums;}
   .health-foot{
     position:sticky;bottom:90px;margin:18px 0 0;text-align:center;
     background:var(--card-hi);border:1px solid var(--line);border-radius:var(--r);padding:15px;
@@ -353,7 +399,7 @@
   .bucket.done{opacity:.55;}
   .bucket .check{width:28px;height:28px;border-radius:9px;border:2px solid var(--line);flex:none;display:flex;align-items:center;justify-content:center;transition:.2s;}
   .bucket.done .check{background:var(--good);border-color:var(--good);}
-  .bucket .check svg{width:16px;height:16px;color:#0c1408;opacity:0;transition:.2s;}
+  .bucket .check svg{width:16px;height:16px;color:var(--on-accent);opacity:0;transition:.2s;}
   .bucket.done .check svg{opacity:1;}
   .bucket .bmid{flex:1;min-width:0;}
   .bucket .bt{font-size:16px;font-weight:600;}
@@ -455,7 +501,7 @@
   .reveal-kicker{color:var(--accent);font-size:13px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;opacity:0;transition:opacity 1s ease;}
   .reveal-pre{color:var(--ink-dim);font-size:18px;font-weight:500;margin-top:24px;opacity:0;transition:opacity 1s ease .3s;}
   .reveal-num{
-    font-family:'SF Pro Rounded','SF Pro Display',-apple-system,system-ui,sans-serif;
+    font-family:ui-rounded,'SF Pro Rounded','SF Pro Display',-apple-system,system-ui,sans-serif;
     font-size:clamp(78px,26vw,140px);font-weight:800;line-height:.9;letter-spacing:-.04em;margin:6px 0 2px;
     background:linear-gradient(165deg,var(--hero-top) 0%,var(--hero-bot) 115%);
     -webkit-background-clip:text;background-clip:text;color:transparent;font-variant-numeric:tabular-nums;
@@ -679,7 +725,6 @@
         <div class="seg" id="ob-sex">
           <button data-v="male">Male</button>
           <button data-v="female">Female</button>
-          <button data-v="other">Average</button>
         </div>
       </div>
       <div class="ob-nav">
@@ -706,7 +751,9 @@
         </div>
         <div class="ob-block">
           <label class="ob-label">Weight (lbs)</label>
-          <input type="number" id="ob-wt" inputmode="numeric" placeholder="160" min="60" max="600">
+          <div class="field" style="margin:0">
+            <input type="number" id="ob-wt" inputmode="numeric" placeholder="160" min="60" max="600">
+          </div>
         </div>
       </div>
       <div class="ob-block" style="margin-top:22px">
@@ -834,7 +881,7 @@
 
   <!-- ====== TOPBAR ====== -->
   <div class="topbar">
-    <div class="brand">Satur<span>days</span></div>
+    <div class="brand"><svg class="brand-star" viewBox="0 0 100 100" aria-hidden="true"><path fill="currentColor" d="M10.0 90.0L39.9 50.8L16.6 41.5L41.4 37.7L34.1 13.7L52.5 30.7L66.7 10.0L64.9 35.1L90.0 33.3L69.3 47.5L86.3 65.9L62.3 58.6L58.5 83.4L49.2 60.1Z"/></svg>Satur<span>days</span></div>
     <button class="icon-btn" id="ambientBtn" title="Ambient mode" aria-label="Ambient mode">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke-linecap="round"/></svg>
     </button>
@@ -847,6 +894,16 @@
       <div class="hero-num" id="heroNum" role="text" aria-label="Calculating your Saturdays">—</div>
       <div class="hero-word">Saturdays left &middot; <b id="heroAge">—</b></div>
       <div class="hero-compound zero" id="heroCompound"></div>
+    </div>
+
+    <div class="cadence" role="img" aria-label="Your week builds to Saturday">
+      <div class="cb"><i></i><span>S</span></div>
+      <div class="cb"><i></i><span>M</span></div>
+      <div class="cb"><i></i><span>T</span></div>
+      <div class="cb"><i></i><span>W</span></div>
+      <div class="cb"><i></i><span>T</span></div>
+      <div class="cb"><i></i><span>F</span></div>
+      <div class="cb sat"><i></i><span>S</span></div>
     </div>
 
     <div class="gridwrap">
@@ -989,6 +1046,19 @@
     </div>
 
     <div class="set-group">
+      <div class="sg-label">Reminders</div>
+      <div class="toggle" id="setReminderToggle">
+        <span class="emoji">⏰</span>
+        <div class="mid"><div class="t">Daily reminder</div><div class="d" id="setReminderDesc">A nudge to log your day</div></div>
+        <div class="sw"></div>
+      </div>
+      <div class="rem-time" id="setReminderTimeRow" hidden>
+        <span class="rem-time-lbl">Remind me at</span>
+        <input type="time" id="setReminderTime" value="20:00" aria-label="Daily reminder time">
+      </div>
+    </div>
+
+    <div class="set-group">
       <div class="sg-label">Legal &amp; support</div>
       <div class="set-list">
         <button class="set-row" data-legal="privacy" aria-label="Read the privacy policy">
@@ -1075,7 +1145,6 @@
         <div class="seg" id="p-sex">
           <button data-v="male">Male</button>
           <button data-v="female">Female</button>
-          <button data-v="other">Average</button>
         </div>
       </div>
       <div class="field"><label>How often do you see them?</label>
@@ -1323,7 +1392,8 @@ let S = blank();
 function blank(){ return {
   bday:null, sex:null, profile:null, dailyLogs:{},
   health:{}, people:[], checkins:{},
-  bucket:[], timedebt:null, rituals:null, ritualLog:{}
+  bucket:[], timedebt:null, rituals:null, ritualLog:{},
+  dailyReminder:null
 }; }
 
 /* Defaults seeded once for the new (Phase 2) features. Kept out of blank() so
@@ -1346,6 +1416,7 @@ function normalize(s){
   s.timedebt  = s.timedebt  || Object.assign({}, DEFAULT_TIMEDEBT);
   s.ritualLog = s.ritualLog || {};
   if(!Array.isArray(s.rituals)) s.rituals = DEFAULT_RITUALS.map(r=>Object.assign({},r));
+  s.dailyReminder = s.dailyReminder || { on:false, time:'20:00' };
   return s;
 }
 
@@ -1419,6 +1490,33 @@ async function ensureSaturdayReminder(){
       extra: { screen: 'presence' }
     }]});
   }catch(e){ /* notifications are best-effort; never block the UI */ }
+}
+
+/* Daily logging reminder — a gentle nudge to open the Log. Driven by
+   S.dailyReminder {on, time:"HH:MM"}. Cancel-then-reschedule so time edits
+   take effect. Native-only; silently no-ops on the web build. */
+const DAILY_NOTIF_ID = 2027;
+async function syncDailyReminder(){
+  const cap = window.Capacitor;
+  if(!(cap && cap.isNativePlatform && cap.isNativePlatform())) return;
+  const LN = cap.Plugins && cap.Plugins.LocalNotifications;
+  if(!LN) return;
+  const r = S.dailyReminder || {};
+  try{
+    await LN.cancel({ notifications: [{ id: DAILY_NOTIF_ID }] });
+    if(!r.on) return;
+    let perm = await LN.checkPermissions();
+    if(perm.display !== 'granted'){ perm = await LN.requestPermissions(); }
+    if(perm.display !== 'granted') return;
+    const [h, m] = String(r.time || '20:00').split(':').map(n=>parseInt(n,10));
+    await LN.schedule({ notifications: [{
+      id: DAILY_NOTIF_ID,
+      title: 'How was today?',
+      body: 'A few seconds to log — your Saturdays are counting.',
+      schedule: { on: { hour: h||20, minute: m||0 }, allowWhileIdle: true },
+      extra: { screen: 'log' }
+    }]});
+  }catch(e){ /* best-effort */ }
 }
 
 /* ---------- Date helpers ---------- */
@@ -1965,7 +2063,7 @@ function renderExtremes(){
 /* ============================================================
    SCREEN 3 — PEOPLE I LOVE
 ============================================================ */
-let pSex='other';
+let pSex=null;   // no default sex; unset blends male/female in remainingYears
 $$('#p-sex button').forEach(b=>b.onclick=()=>{
   $$('#p-sex button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); pSex=b.dataset.v;
 });
@@ -1974,8 +2072,7 @@ $('#p-cancel').onclick = closeModal;
 $('#modal').onclick = e=>{ if(e.target===$('#modal')) closeModal(); };
 function openModal(){
   $('#p-name').value=''; $('#p-bday').value=''; $('#p-rel').value='parent'; $('#p-freq').value='52';
-  $$('#p-sex button').forEach(x=>x.classList.remove('on')); pSex='other';
-  $$('#p-sex button')[2].classList.add('on');
+  $$('#p-sex button').forEach(x=>x.classList.remove('on')); pSex=null;
   $('#modal').classList.add('open');
 }
 function closeModal(){ $('#modal').classList.remove('open'); }
@@ -2064,7 +2161,7 @@ function renderPeople(){
    SCREEN — PLANNER / BUCKET LIST
 ============================================================ */
 const CATS = [
-  {id:'adventure',label:'Adventure',emoji:'🌄',color:'#f0a04b'},
+  {id:'adventure',label:'Adventure',emoji:'🌄',color:'#f59e0b'},
   {id:'family',   label:'Family',   emoji:'🏡',color:'#7fb069'},
   {id:'creative', label:'Creative', emoji:'🎨',color:'#c98bdb'},
   {id:'personal', label:'Personal', emoji:'🌱',color:'#5bb3c9'},
@@ -2466,21 +2563,29 @@ function drawShare(){
   cv.width=W; cv.height=H;
   const x=cv.getContext('2d');
 
+  // Theme-aware: the share card reads the active theme's variables so a shared
+  // image always matches what the user sees in-app (light or dark).
+  const bg=getCSS('--bg'), bgSoft=getCSS('--bg-soft'), card=getCSS('--card'),
+        ink=getCSS('--ink'), inkDim=getCSS('--ink-dim'), inkFaint=getCSS('--ink-faint'),
+        line=getCSS('--line'), accent=getCSS('--accent'),
+        dotLived=getCSS('--dot-lived'), dotNow=getCSS('--dot-now'), dotLeft=getCSS('--dot-left'),
+        glow=getCSS('--accent-glow')||'rgba(0,0,0,0)';
+
   const g=x.createLinearGradient(0,0,0,H);
-  g.addColorStop(0,'#0a0a0b'); g.addColorStop(1,'#161210');
+  g.addColorStop(0,bg); g.addColorStop(1,bgSoft);
   x.fillStyle=g; x.fillRect(0,0,W,H);
   const rg=x.createRadialGradient(W/2,H*0.30,40,W/2,H*0.30,W*0.9);
-  rg.addColorStop(0,'rgba(240,160,75,0.10)'); rg.addColorStop(1,'rgba(240,160,75,0)');
+  rg.addColorStop(0,glow); rg.addColorStop(1,'rgba(0,0,0,0)');
   x.fillStyle=rg; x.fillRect(0,0,W,H);
 
   x.textAlign='center';
-  x.fillStyle='#f0a04b'; x.font='600 34px -apple-system,Inter,sans-serif';
-  x.fillText('M E M E N T O   M O R I', W/2, 200);
-  x.fillStyle='#9a958c'; x.font='400 46px -apple-system,Inter,sans-serif';
+  x.fillStyle=accent; x.font='700 34px -apple-system,"SF Pro Rounded",Inter,sans-serif';
+  x.fillText('S A T U R D A Y S', W/2, 200);
+  x.fillStyle=inkDim; x.font='400 46px -apple-system,Inter,sans-serif';
   x.fillText('I have', W/2, 330);
-  x.fillStyle='#f4f1ea'; x.font='800 290px -apple-system,Inter,sans-serif';
+  x.fillStyle=ink; x.font='800 290px -apple-system,"SF Pro Rounded",Inter,sans-serif';
   x.fillText(fmt(c.left), W/2, 590);
-  x.fillStyle='#f0a04b'; x.font='600 64px -apple-system,Inter,sans-serif';
+  x.fillStyle=accent; x.font='600 64px -apple-system,Inter,sans-serif';
   x.fillText('Saturdays left', W/2, 680);
 
   // grid
@@ -2491,7 +2596,7 @@ function drawShare(){
     const col=i%cols, row=(i/cols)|0;
     const cx=gx+col*cell+cell/2, cy=gy+row*cell+cell/2;
     x.beginPath();
-    x.fillStyle = i<c.lived ? '#f0a04b' : (i===c.lived ? '#fff0dc' : '#2b2b30');
+    x.fillStyle = i<c.lived ? dotLived : (i===c.lived ? dotNow : dotLeft);
     x.arc(cx,cy,r,0,7); x.fill();
   }
 
@@ -2504,19 +2609,20 @@ function drawShare(){
   const q1Y  = q2Y-66;         // "What are you doing"
   if(hook){
     const cardH=250, cardBottom=q1Y-44, cardTop=cardBottom-cardH;
-    x.fillStyle='#1d1d20'; roundRect(x, 90, cardTop, W-180, cardH, 28); x.fill();
+    x.fillStyle=card; roundRect(x, 90, cardTop, W-180, cardH, 28); x.fill();
+    x.lineWidth=2; x.strokeStyle=line; roundRect(x, 90, cardTop, W-180, cardH, 28); x.stroke();
     x.textAlign='center';
-    x.fillStyle='#f0a04b'; x.font='800 130px -apple-system,Inter,sans-serif';
+    x.fillStyle=accent; x.font='800 130px -apple-system,"SF Pro Rounded",Inter,sans-serif';
     x.fillText(fmt(hook.visits), W/2, cardTop+132);
-    x.fillStyle='#f4f1ea'; x.font='600 46px -apple-system,Inter,sans-serif';
+    x.fillStyle=ink; x.font='600 46px -apple-system,Inter,sans-serif';
     x.fillText(`${hook.unit} left with ${hook.name}`, W/2, cardTop+194);
-    x.fillStyle='#9a958c'; x.font='400 34px -apple-system,Inter,sans-serif';
+    x.fillStyle=inkDim; x.font='400 34px -apple-system,Inter,sans-serif';
     x.fillText(`${fmt(hook.visits)} more ${hook.also}`, W/2, cardTop+240);
   }
-  x.fillStyle='#f4f1ea'; x.font='600 50px -apple-system,Inter,sans-serif';
+  x.fillStyle=ink; x.font='600 50px -apple-system,Inter,sans-serif';
   x.fillText('What are you doing', W/2, q1Y);
   x.fillText('with yours?', W/2, q2Y);
-  x.fillStyle='#5c584f'; x.font='500 36px -apple-system,Inter,sans-serif';
+  x.fillStyle=inkFaint; x.font='500 36px -apple-system,Inter,sans-serif';
   x.fillText('saturdays-vert.vercel.app', W/2, urlY);
 
   const cap = hook
@@ -2594,14 +2700,14 @@ $('#shareBtn').onclick=async()=>{
    THEME SYSTEM — one attribute on <html> swaps every surface.
 ============================================================ */
 const THEMES = [
-  {id:'midnight', name:'Golden Hour', desc:'Warm amber on true black', swatch:['#000000','#f0a04b','#1c1917'], color:'#000000'},
-  {id:'wellness', name:'Indigo Focus', desc:'Indigo iris on true black', swatch:['#000000','#6366f1','#0f172a'], color:'#000000'},
-  {id:'dawn',     name:'Dawn',     desc:'Cream & terracotta',    swatch:['#faf5ef','#c4765a','#ffffff'], color:'#faf5ef'},
-  {id:'minimal',  name:'Minimal',  desc:'White, gold & black',   swatch:['#ffffff','#b8960c','#0a0a0a'], color:'#ffffff'},
+  {id:'clinical', name:'Clinical',    desc:'Clean white & indigo',   swatch:['#f6f8fc','#4f46e5','#ffffff'], color:'#f6f8fc'},
+  {id:'cardstock',name:'Cardstock',   desc:'Warm paper & gold',      swatch:['#f4efe3','#c2740a','#fdfaf4'], color:'#f4efe3'},
+  {id:'wellness', name:'Slate',       desc:'Cool charcoal & indigo', swatch:['#14161d','#8280f0','#1e212b'], color:'#14161d'},
+  {id:'midnight', name:'Graphite',    desc:'Warm charcoal & gold',   swatch:['#1a1714','#f0b45a','#262019'], color:'#1a1714'},
 ];
-let currentTheme = 'midnight';
+let currentTheme = 'clinical';
 function applyTheme(id, persist){
-  if(!THEMES.find(t=>t.id===id)) id = 'midnight';
+  if(!THEMES.find(t=>t.id===id)) id = 'clinical';
   currentTheme = id;
   document.documentElement.setAttribute('data-theme', id);
   const meta = document.querySelector('meta[name=theme-color]'), t = THEMES.find(x=>x.id===id);
@@ -2640,6 +2746,22 @@ function renderThemeGrid(){
 function renderSettings(){
   const v = $('#aboutVersion'); if(v) v.textContent = 'Version ' + APP_VERSION;
   renderThemeGrid();
+  wireReminderSettings();
+}
+function wireReminderSettings(){
+  const tog = $('#setReminderToggle'), timeRow = $('#setReminderTimeRow'),
+        timeInput = $('#setReminderTime'), desc = $('#setReminderDesc');
+  if(!tog) return;
+  const r = S.dailyReminder || (S.dailyReminder = { on:false, time:'20:00' });
+  desc.textContent = Store.isNative ? 'A nudge to log your day' : 'Delivered on your iPhone';
+  tog.setAttribute('role','switch'); tog.setAttribute('tabindex','0'); tog.setAttribute('aria-label','Daily reminder');
+  timeInput.value = r.time || '20:00';
+  const sync = ()=>{ tog.classList.toggle('on', !!r.on); tog.setAttribute('aria-checked', r.on?'true':'false'); timeRow.hidden = !r.on; };
+  sync();
+  const flip = ()=>{ r.on = !r.on; sync(); save(); syncDailyReminder(); if(r.on) toast('Daily reminder on'); };
+  tog.onclick = flip;
+  tog.onkeydown = e=>{ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); flip(); } };
+  timeInput.onchange = ()=>{ r.time = timeInput.value || '20:00'; save(); syncDailyReminder(); };
 }
 $('#setEditProfile').onclick = ()=>openOnboarding();
 $('#setClearData').onclick = ()=>{ $('#confirmModal').classList.add('open'); };
@@ -2762,19 +2884,21 @@ window.addEventListener('orientationchange', ()=>setTimeout(drawGrid,300));
   let themeId = null;
   try{ themeId = localStorage.getItem(THEME_KEY); }catch(e){}
   if(!themeId){ themeId = await Store.get(THEME_KEY); }
-  applyTheme(themeId || 'midnight', false);
+  applyTheme(themeId || 'clinical', false);
   // Compliance gates (durable so they survive localStorage eviction on native).
   ageOk   = (await Store.get(AGE_KEY))  === '1';
   discAck = (await Store.get(DISC_KEY)) === '1';
   writeWidgetData();
   gateContinue();
-  // Tapping the Saturday reminder deep-links straight to the Presence screen.
+  // Re-register the daily reminder from the saved preference on every launch.
+  syncDailyReminder();
+  // Tapping a reminder deep-links straight to the relevant screen.
   const cap = window.Capacitor;
   const LN = cap && cap.Plugins && cap.Plugins.LocalNotifications;
   if(LN && LN.addListener){
     LN.addListener('localNotificationActionPerformed', ev => {
-      if(ev && ev.notification && ev.notification.extra &&
-         ev.notification.extra.screen === 'presence'){ showScreen('presence'); }
+      const scr = ev && ev.notification && ev.notification.extra && ev.notification.extra.screen;
+      if(scr === 'presence' || scr === 'log'){ showScreen(scr); }
     });
   }
 })();

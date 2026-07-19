@@ -4,15 +4,15 @@ const config: CapacitorConfig = {
   appId: 'com.kendalldale.saturdays',
   appName: 'Saturdays',
   webDir: 'www',
-  backgroundColor: '#0a0a0b',
+  backgroundColor: '#f6f8fc',
   ios: {
-    backgroundColor: '#0a0a0b',
+    backgroundColor: '#f6f8fc',
     contentInset: 'always',
   },
   plugins: {
     LocalNotifications: {
-      // Tinted to match the app's amber accent on the lock screen / banner.
-      iconColor: '#f0a04b',
+      // Tinted to match the app's indigo accent on the lock screen / banner.
+      iconColor: '#4f46e5',
     },
   },
 };
