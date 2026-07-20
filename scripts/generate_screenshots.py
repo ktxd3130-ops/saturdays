@@ -253,7 +253,7 @@ def screen_health(draw, width, height, top):
     """2. Habit toggles bending the curve + delta."""
     margin = int(width * 0.062)
     panel = (margin, top + int(height * 0.015),
-             width - margin, height - int(height * 0.05))
+             width - margin, height - int(height * 0.10))
     rounded_panel(draw, panel, radius=int(width * 0.025))
     px0, py0, px1, py1 = panel
     pw = px1 - px0
@@ -299,7 +299,7 @@ def screen_logger(draw, width, height, top):
     """3. Daily check-in + streak dots."""
     margin = int(width * 0.062)
     panel = (margin, top + int(height * 0.015),
-             width - margin, height - int(height * 0.05))
+             width - margin, height - int(height * 0.10))
     rounded_panel(draw, panel, radius=int(width * 0.025))
     px0, py0, px1, py1 = panel
     pcx = (px0 + px1) // 2
@@ -353,7 +353,7 @@ def screen_people(draw, width, height, top):
     """4. Relationship visit-frequency cards."""
     margin = int(width * 0.062)
     panel = (margin, top + int(height * 0.015),
-             width - margin, height - int(height * 0.05))
+             width - margin, height - int(height * 0.32))
     rounded_panel(draw, panel, radius=int(width * 0.025))
     px0, py0, px1, py1 = panel
     pw = px1 - px0
@@ -409,7 +409,7 @@ def screen_share(draw, width, height, top):
     """5. Polished centered share card."""
     margin = int(width * 0.062)
     panel = (margin, top + int(height * 0.015),
-             width - margin, height - int(height * 0.05))
+             width - margin, height - int(height * 0.08))
     rounded_panel(draw, panel, radius=int(width * 0.025))
     px0, py0, px1, py1 = panel
     pcx = (px0 + px1) // 2
