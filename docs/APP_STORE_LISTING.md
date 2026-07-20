@@ -5,7 +5,7 @@ Copy-ready fields for App Store Connect. Character limits noted; counts are appr
 ---
 
 ## Identity
-- **Name** (≤30): `Saturdays: Memento Mori`  *(23)*
+- **Name** (≤30): `Saturdays Left`  *(14)*
 - **Subtitle** (≤30): `Life Time Tracker`  *(18)*
 - **Bundle ID:** `com.kendalldale.saturdays`
 - **Primary category:** Lifestyle
@@ -19,9 +19,9 @@ Copy-ready fields for App Store Connect. Character limits noted; counts are appr
 
 ## Keywords (≤100, comma-separated, no spaces after commas)
 ```
-memento mori,life calendar,weeks,mortality,presence,stoic,life clock,countdown,4000 weeks,reflection
+life tracker,life calendar,weeks,countdown,presence,habits,life clock,4000 weeks,memento mori
 ```
-*(~96 chars. Don't repeat the app name in keywords — it's already indexed from the title.)*
+*(93 chars — verified under the 100 limit. Don't repeat the app name in keywords; it's already indexed from the title.)*
 
 ## Promotional text (≤170, editable anytime without review)
 ```
@@ -41,7 +41,6 @@ WHAT YOU CAN DO
 • Hold your people close — add the ones you love and see how many Saturdays you realistically share. The visits-left number changes how you treat the next one.
 • Keep a weekly ritual — one question every Saturday: were you present? A quiet streak that rewards attention, not productivity.
 • Make it impossible to ignore — generate a shareable image of your count and ask someone what they're doing with theirs.
-• Add a home-screen widget — your Saturdays, in view every day.
 
 PRIVATE BY DESIGN
 
@@ -56,9 +55,18 @@ If you're struggling, you're not alone. In the U.S. you can call or text 988 any
 Spend this Saturday like it counts.
 ```
 
-## What's New (v1.0)
+## What's New (v1.1.0)
 ```
-The first Saturdays. See how many you have left, bend the curve with your habits, hold your people close, and keep a weekly presence ritual. Everything stays on your device.
+A whole new look.
+
+Saturdays Left has been redesigned from the ground up — a clean, light interface built around one clear number, with a new seven-point star mark and four themes to choose from: Clinical, Cardstock, Slate and Graphite. Pick the one that fits how you think.
+
+Also in this release:
+• An optional daily reminder to log your day, at a time you choose.
+• Fixed a timezone issue that could file an evening entry under the wrong date.
+• Sharper contrast and legibility across every screen.
+
+Everything still stays on your device. Always will.
 ```
 
 ---
@@ -71,7 +79,7 @@ Saturdays is a reflective "memento mori" app inspired by Stoic philosophy and th
 - The app does not access Apple Health/HealthKit and makes no medical claims.
 - All data is stored locally on the device. No accounts, no servers, no analytics, no third-party SDKs. Privacy nutrition label is "Data Not Collected."
 - A discreet 988 crisis-line link is included on the main screen as a duty-of-care measure.
-- Native features beyond the web content: local notifications (weekly reminder), a Home Screen widget (WidgetKit), and native share-sheet image export.
+- Native features beyond the web content: local notifications (a weekly presence reminder and an optional daily logging reminder) and native share-sheet image export.
 
 No login required to review all functionality.
 ```
@@ -86,7 +94,6 @@ No login required to review all functionality.
 3. People I love — shared-Saturdays card.
 4. Presence — the weekly check-in + streak.
 5. The reveal — the shareable image.
-6. (Optional) Widget on a home screen.
 
 > Tip: an App Preview video of the count animating + grid sweep is high-impact for this app.
 

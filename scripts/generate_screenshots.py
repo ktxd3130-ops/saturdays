@@ -28,17 +28,19 @@ from PIL import Image, ImageDraw, ImageFont
 # ----------------------------------------------------------------------------
 # Palette — pulled exactly from the Saturdays app aesthetic.
 # ----------------------------------------------------------------------------
-BG_TOP      = (10, 10, 11)     # #0a0a0b  near-black (top of gradient)
-BG_BOTTOM   = (22, 22, 24)     # #161618  slightly lifted (bottom of gradient)
-SURFACE     = (22, 22, 24)     # #161618  card / panel surface
-BORDER      = (38, 38, 43)     # #26262b  hairline border
-INK         = (244, 241, 234)  # #f4f1ea  primary ink (headings, big numbers)
-INK_DIM     = (154, 149, 140)  # #9a958c  dim ink (body)
-INK_FAINT   = (92, 88, 79)     # #5c584f  faint ink
-ACCENT      = (240, 160, 75)   # #f0a04b  signature warm amber
-GREEN       = (127, 176, 105)  # #7fb069
-TEAL        = (122, 184, 160)  # #7ab8a0
-RED         = (217, 106, 91)   # #d96a5b
+# Clinical theme — the app's default since the 1.1.0 rebrand (clean white + indigo).
+BG_TOP      = (246, 248, 252)  # #f6f8fc  clinical ground (top of gradient)
+BG_BOTTOM   = (238, 241, 248)  # #eef1f8  faintly cooler (bottom of gradient)
+SURFACE     = (255, 255, 255)  # #ffffff  card / panel surface
+BORDER      = (226, 231, 240)  # #e2e7f0  hairline border
+INK         = (26, 34, 51)     # #1a2233  primary ink (headings, big numbers)
+INK_DIM     = (91, 101, 119)   # #5b6577  dim ink (body)
+INK_FAINT   = (154, 163, 180)  # #9aa3b4  faint ink
+ACCENT      = (79, 70, 229)    # #4f46e5  brand indigo
+DOT_LEFT    = (226, 229, 240)  # #e2e5f0  remaining-Saturday dots (must recede on light)
+GREEN       = (47, 158, 111)   # #2f9e6f
+TEAL        = (58, 48, 181)    # #3a30b5  deep indigo (was teal)
+RED         = (220, 76, 76)    # #dc4c4c
 
 # ----------------------------------------------------------------------------
 # Font loading — robust against missing files. Tries a list of candidate paths
@@ -48,7 +50,11 @@ FONT_CANDIDATES = {
     "text":    ["/System/Library/Fonts/SFNS.ttf",
                 "/System/Library/Fonts/HelveticaNeue.ttc",
                 "/Library/Fonts/Arial.ttf"],
-    "rounded": ["/System/Library/Fonts/SFNSRounded.ttf",
+    # "rounded" is the DISPLAY face (headlines, hero numerals). Futura is the brand
+    # display type as of 1.1.0; fall back through the old stack if it's missing.
+    "rounded": ["/System/Library/Fonts/Supplemental/Futura.ttc",
+                "/Library/Fonts/Futura.ttc",
+                "/System/Library/Fonts/SFNSRounded.ttf",
                 "/System/Library/Fonts/SFNS.ttf",
                 "/System/Library/Fonts/HelveticaNeue.ttc"],
 }
@@ -118,13 +124,13 @@ def pill_toggle(draw: ImageDraw.ImageDraw, x: int, y: int,
                 w: int, h: int, on: bool) -> None:
     """Draw an iOS-style pill switch. On = amber track + right knob."""
     r = h // 2
-    track = ACCENT if on else (48, 48, 54)
+    track = ACCENT if on else BORDER
     draw.rounded_rectangle((x, y, x + w, y + h), radius=r, fill=track)
     knob_r = int(h * 0.40)
     cy = y + h // 2
     cx = (x + w - r) if on else (x + r)
     draw.ellipse((cx - knob_r, cy - knob_r, cx + knob_r, cy + knob_r),
-                 fill=(244, 241, 234))
+                 fill=(255, 255, 255))
 
 
 # ----------------------------------------------------------------------------
@@ -201,7 +207,9 @@ def week_grid(draw: ImageDraw.ImageDraw, box: tuple,
             cx = x0 + px * c + px / 2
             cy = y0 + py * r + py / 2
             lived = idx < lived_cells
-            color = ACCENT if lived else (44, 44, 50)
+            # DOT_LEFT, not a dark "faint" — on the light ground the remaining
+            # Saturdays must recede, otherwise the grid reads as blacked-out.
+            color = ACCENT if lived else DOT_LEFT
             draw.ellipse((cx - dot, cy - dot, cx + dot, cy + dot), fill=color)
             idx += 1
 
@@ -212,8 +220,10 @@ def week_grid(draw: ImageDraw.ImageDraw, box: tuple,
 def screen_hero(draw, width, height, top):
     """1. Big reveal number + faint week-grid motif."""
     margin = int(width * 0.062)
+    # Panel hugs its content: running it to ~95% of the screen left the bottom
+    # third empty, which reads as a layout bug on a store listing.
     panel = (margin, top + int(height * 0.015),
-             width - margin, height - int(height * 0.05))
+             width - margin, height - int(height * 0.14))
     rounded_panel(draw, panel, radius=int(width * 0.025))
 
     px0, py0, px1, py1 = panel
@@ -223,13 +233,13 @@ def screen_hero(draw, width, height, top):
     ph = py1 - py0
 
     # Subtle week-grid in the upper third of the panel.
-    grid_box = (px0 + int(pw * 0.10), py0 + int(ph * 0.10),
-                px1 - int(pw * 0.10), py0 + int(ph * 0.34))
+    grid_box = (px0 + int(pw * 0.10), py0 + int(ph * 0.11),
+                px1 - int(pw * 0.10), py0 + int(ph * 0.42))
     week_grid(draw, grid_box, cols=26, rows=10, lived_frac=0.46)
 
     # Big hero number — centered in the lower-middle of the panel.
     big_font = load_font("rounded", int(width * 0.21))
-    num_y = py0 + int(ph * 0.62)
+    num_y = py0 + int(ph * 0.70)
     draw.text((pcx, num_y), "1,847", font=big_font, fill=ACCENT, anchor="mm")
 
     # "Saturdays left" beneath.
@@ -312,7 +322,7 @@ def screen_logger(draw, width, height, top):
     draw.rounded_rectangle((yes_x, cy, yes_x + chip_w, cy + chip_h),
                            radius=chip_h // 2, fill=ACCENT)
     draw.text((yes_x + chip_w // 2, cy + chip_h // 2), "Yes",
-              font=chip_font, fill=(10, 10, 11), anchor="mm")
+              font=chip_font, fill=(255, 255, 255), anchor="mm")
     # "Not really" — unselected
     draw.rounded_rectangle((no_x, cy, no_x + chip_w, cy + chip_h),
                            radius=chip_h // 2, outline=BORDER, width=2)
@@ -333,7 +343,7 @@ def screen_logger(draw, width, height, top):
     dx = pcx - total_w // 2
     dyy = sy + int(height * 0.055)
     for i in range(dot_count):
-        col = ACCENT if i < 11 else (60, 60, 66)
+        col = ACCENT if i < 11 else DOT_LEFT
         draw.ellipse((dx - dot_r, dyy - dot_r, dx + dot_r, dyy + dot_r),
                      fill=col)
         dx += spacing
@@ -370,7 +380,7 @@ def screen_people(draw, width, height, top):
         cx1, cy1 = px1 - pad, card_top + card_h
         draw.rounded_rectangle((cx0, cy0, cx1, cy1),
                                radius=int(width * 0.022),
-                               fill=(28, 28, 32), outline=BORDER, width=1)
+                               fill=SURFACE, outline=BORDER, width=1)
         # avatar dot
         av_r = int(card_h * 0.30)
         av_cx = cx0 + int(pw * 0.10)
@@ -380,7 +390,7 @@ def screen_people(draw, width, height, top):
         # initial
         init_font = load_font("text", int(av_r * 1.1))
         draw.text((av_cx, av_cy), name[0], font=init_font,
-                  fill=(10, 10, 11), anchor="mm")
+                  fill=(255, 255, 255), anchor="mm")
         # name + visits
         text_x = av_cx + av_r + int(pw * 0.05)
         draw.text((text_x, av_cy - int(card_h * 0.16)), name,
@@ -410,7 +420,7 @@ def screen_share(draw, width, height, top):
     card = (px0 + inset, py0 + int((py1 - py0) * 0.12),
             px1 - inset, py1 - int((py1 - py0) * 0.12))
     draw.rounded_rectangle(card, radius=int(width * 0.03),
-                           fill=(16, 16, 18), outline=ACCENT, width=2)
+                           fill=SURFACE, outline=ACCENT, width=2)
     ccx = (card[0] + card[2]) // 2
     cy_top, cy_bot = card[1], card[3]
 
@@ -472,9 +482,11 @@ SCREENS = [
 ]
 
 # Apple-required resolutions: (folder, width, height)
+# Apple consolidated its requirements — an update now needs only the 6.9" iPhone
+# set, plus the 13" iPad set because this app declares iPad support.
 SIZES = [
-    ("6.7-inch", 1290, 2796),
-    ("6.1-inch", 1179, 2556),
+    ("appstore-6.9", 1290, 2796),   # 6.9" iPhone (also accepted for 6.7")
+    ("appstore-ipad-13", 2064, 2752),  # 13" iPad
 ]
 
 
